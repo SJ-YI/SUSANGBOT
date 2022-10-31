@@ -1,0 +1,1 @@
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="04030", ATTRS{idProduct}=="6001", GROUP="sj", MODE="0666" , SYMLINK+= "usb485"

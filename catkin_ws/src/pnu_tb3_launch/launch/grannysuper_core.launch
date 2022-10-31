@@ -1,0 +1,29 @@
+<launch>
+
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find pnu_tb3_launch)/urdf/turtlebot_super_granny.urdf.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+  <arg name="multi_robot_name" default=""/>
+  <arg name="set_lidar_frame_id" default="base_scan"/>
+
+
+ <!-- openCR interface -->
+ <include file="$(find turtlebot3_bringup)/launch/turtlebot3_core.launch">
+   <arg name="multi_robot_name" value="$(arg multi_robot_name)"/>
+ </include>
+
+
+ <include file="$(find pnu_tb3_launch)/launch/rplidar_s1.launch">
+ </include>
+
+ <node pkg="turtlebot3_bringup" type="turtlebot3_diagnostics" name="turtlebot3_diagnostics" output="screen"/>
+
+  <!-- Camera -->
+ <include file="$(find uvc_camera)/launch/camera_node.launch"/>
+
+ <!-- Robot state publisher -->
+ <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <!-- camera tf -->
+  <node pkg="tf" type="static_transform_publisher" name="broadcaster1" args="0 0 0 0 0 0 /head_rgbd_sensor_rgb_frame_sync /camera 100" />
+
+</launch>

@@ -1,0 +1,24 @@
+# sudo udevadm trigger -v /dev/video1
+# udevadm test /sys/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.4/1-2.4:1.0/video4linux/video1 2>/dev/null | ag -i seria
+
+#  idVendor           0x046d Logitech, Inc.
+#  idProduct          0x082d HD Pro Webcam C920
+
+# dmesg:
+#[ 4281.445734] usb 1-1.2.4: New USB device found, idVendor=046d, idProduct=082d
+#[ 4281.445742] usb 1-1.2.4: New USB device strings: Mfr=0, Product=2, SerialNumber=1
+#[ 4281.445746] usb 1-1.2.4: Product: HD Pro Webcam C920
+#[ 4281.445749] usb 1-1.2.4: SerialNumber: E27733EF
+#[ 4281.446431] uvcvideo: Found UVC 1.00 device HD Pro Webcam C920 (046d:082d)
+#[ 4281.447232] input: HD Pro Webcam C920 as /devices/pci0000:00/0000:00:14.0/usb1/1-1/1-1.2/1-1.2.4/1-1.2.4:1.0/input/input16
+
+KERNEL=="video[0-9]*", SUBSYSTEM=="video4linux", ACTION=="add", ATTRS{serial}=="E27733EF", SYMLINK+="logitechc920"
+KERNEL=="video[0-9]*", SUBSYSTEM=="video4linux", ACTION=="add", ATTRS{serial}=="08E070AD", SYMLINK+="logitechc905"
+
+#SUBSYSTEMS=="video4linux", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c092", GROUP="sj", SYMLINK+= "logitechc920"
+SUBSYSTEM=="video4linux", KERNEL=="video[0-9]*", ATTRS{product}=="HD Pro Webcam C920" , SYMLINK+= "logitechc920"
+
+
+#wideangle one
+#SUBSYSTEMS=="usb", ATTRS{idVendor}=="05e3", ATTRS{idProduct}=="0608", GROUP="naver", MODE="0666", SYMLINK+="widecam"
+SUBSYSTEMS=="video4linux", ATTRS{idVendor}=="0458", ATTRS{idProduct}=="708c", GROUP="naver", MODE="0666", SYMLINK+="widecam"

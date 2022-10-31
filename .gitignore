@@ -1,0 +1,86 @@
+#Temporary folders
+RunRobot/*.lua
+RunRobot/*.sh
+RunRobot/*.py
+RunRobot/*.pzl
+RunRobot/*
+Memory/*.lua
+Webots/worlds
+
+
+
+# catkin build and devel folders
+catkin_ws/build
+catkin_ws/devel
+catkin_ws/src/CMakeLists.txt
+
+# Python compiled files and saved data files
+*.pyc
+*.npy
+*.pkl
+
+# compiled sources
+*.o
+*.a
+*.so
+*.dylib
+*.hex
+*.bin
+*.elf
+*.d
+*.signature
+*.run
+
+# generic log files
+*.log
+*.raw
+
+# Config link file
+Config.lua
+
+# auto-generated webots controller wrapper
+*.wbproj
+
+#auto-generated webots file
+#*.wrl
+*.wbproj
+*.cache
+
+#pcd file
+*.pcd
+*.las
+
+# Temp and Swap files
+*~
+*.swp
+.DS_Store
+
+# Build file with CMAKE
+build
+
+# Webot World File temp
+*.project
+
+# svn
+.svn
+
+# screen log
+*screenlog*
+
+# Julia and iPython
+.ipynb_checkpoints
+*.ipynb
+
+#data files
+*.dat
+*.mat
+*.avi
+*.bag
+
+# pycharm
+.idea
+
+
+#generated start script
+start_robot.sh
+webots_start.sh

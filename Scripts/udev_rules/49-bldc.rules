@@ -1,0 +1,1 @@
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", SYMLINK+="bldc",GROUP="naver", MODE="0666"

@@ -1,0 +1,13 @@
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT4TFPW9", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl0"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT4TFVP0", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl1"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT2KQBBD", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl2"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT2KO6LE", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl3"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT2KQB13", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl4"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT4TFV3O", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl5"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT4TFVO5", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl6"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT4TFOOJ", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl7"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT4TFOMT", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl8"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT4TFOPP", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl9"
+
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT4TFW0U", GROUP="sj", MODE="0666", SYMLINK+= "usb2dxl0"
