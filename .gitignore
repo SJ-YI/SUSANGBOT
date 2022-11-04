@@ -1,12 +1,4 @@
 #Temporary folders
-RunRobot/*.lua
-RunRobot/*.sh
-RunRobot/*.py
-RunRobot/*.pzl
-RunRobot/*
-Memory/*.lua
-Webots/worlds
-
 
 
 # catkin build and devel folders
