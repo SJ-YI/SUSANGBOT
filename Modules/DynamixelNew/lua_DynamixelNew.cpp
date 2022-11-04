@@ -27,7 +27,8 @@ extern "C"
 #define ADDR_X_GOAL_VELOCITY          104
 #define ADDR_X_GOAL_POSITION          116
 #define ADDR_X_PRESENT_POSITION       132
-
+#define ADDR_X_PRESENT_VOLTAGE        144
+#define ADDR_X_PRESENT_TEMPERATURE        146
 
 #define ADDR_X_P_GAIN       84
 
@@ -37,6 +38,8 @@ extern "C"
 #define LEN_X_GOAL_VELOCITY           4
 #define LEN_X_GOAL_CURRENT            2
 #define LEN_X_PRESENT_POSITION        4
+#define LEN_X_PRESENT_VOLTAGE        2
+#define LEN_X_PRESENT_TEMPERATURE        1
 #define LEN_X_P_GAIN            2
 
 
@@ -70,6 +73,8 @@ static dynamixel::GroupSyncWrite *gSW_vel;
 static dynamixel::GroupSyncWrite *gSW_current;
 static dynamixel::GroupSyncWrite *gSW_pgain;
 static dynamixel::GroupSyncRead *gSR;
+static dynamixel::GroupSyncRead *gSR_voltage;
+static dynamixel::GroupSyncRead *gSR_temperature;
 
 static dynamixel::GroupSyncWrite *gSW_pro_pos;
 static dynamixel::GroupSyncWrite *gSW_pro_vel;
@@ -122,6 +127,8 @@ static int lua_openport(lua_State *L){
   gSW_pgain = new dynamixel::GroupSyncWrite(portHandler, packetHandler, ADDR_X_P_GAIN, LEN_X_P_GAIN);
 
   gSR = new dynamixel::GroupSyncRead(portHandler, packetHandler, ADDR_X_PRESENT_POSITION, LEN_X_PRESENT_POSITION);
+	gSR_voltage = new dynamixel::GroupSyncRead(portHandler, packetHandler, ADDR_X_PRESENT_VOLTAGE, LEN_X_PRESENT_VOLTAGE);
+	gSR_temperature = new dynamixel::GroupSyncRead(portHandler, packetHandler, ADDR_X_PRESENT_TEMPERATURE, LEN_X_PRESENT_TEMPERATURE);
 
 	gSW_pro_pos = new dynamixel::GroupSyncWrite(portHandler, packetHandler, ADDR_PRO_GOAL_POSITION, LEN_X_GOAL_POSITION);
 	gSW_pro_vel = new dynamixel::GroupSyncWrite(portHandler, packetHandler, ADDR_PRO_GOAL_VELOCITY, LEN_X_GOAL_VELOCITY);
@@ -235,6 +242,35 @@ static int lua_read_position2(lua_State *L){
   return 1;
 }
 
+static int lua_read_voltage(lua_State *L){
+  static std::vector<double> dxl_ids=lua_checkvector(L,1);
+  int i;
+  gSR_voltage->clearParam();
+  for (i=0;i<dxl_ids.size();i++){
+    int dxl_id=(int) dxl_ids[i];
+    dxl_addparam_result = gSR_voltage->addParam(dxl_id);
+    if (dxl_addparam_result != true)  {fprintf(stderr, "[ID:%03d] grouSyncRead addparam failed", dxl_id);return 0;}
+  }
+  dxl_comm_result = gSR_voltage->txRxPacket(); //send bulk read packet
+  if (dxl_comm_result != COMM_SUCCESS)  printf("%s\n", packetHandler->getTxRxResult(dxl_comm_result));
+  std::vector<double> ret;
+  for (i=0;i<dxl_ids.size();i++){
+    int dxl_id=(int) dxl_ids[i];
+    dxl_getdata_result = gSR_voltage->isAvailable(dxl_id, ADDR_X_PRESENT_VOLTAGE, LEN_X_PRESENT_VOLTAGE);
+    if (dxl_getdata_result != true){fprintf(stderr, "[ID:%03d] groupSyncRead getdata failed", dxl_id);
+      return 0;
+    }else{
+      int32_t present_voltage = gSR_voltage->getData(dxl_id, ADDR_X_PRESENT_VOLTAGE, LEN_X_PRESENT_VOLTAGE);
+      ret.push_back(present_voltage);
+    }
+  }
+  lua_createtable(L, ret.size(), 0); //return the array
+	for (int i = 0; i < ret.size(); i++) {
+		lua_pushnumber(L, ret[i]);
+		lua_rawseti(L, -2, i+1);
+	}
+  return 1;
+}
 
 
 static int lua_set_goal_positions(lua_State *L){
@@ -469,6 +505,7 @@ static const struct luaL_Reg DynamixelNew_lib [] = {
 
   {"read_position", lua_read_position},
   {"read_position2", lua_read_position2},
+	{"read_voltage", lua_read_voltage},
   {"set_goal_positions", lua_set_goal_positions},
   {"set_goal_positions2", lua_set_goal_positions2},
 

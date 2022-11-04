@@ -133,6 +133,12 @@ local function read_xm_position()
   return 1
 end
 
+local function read_xm_voltage()
+  if #xm_servo_ids==0 then return 1 end
+  local servo_voltage=DXL.read_voltage(xm_servo_ids)
+  return servo_voltage
+end
+
 local function read_pro_position()
   if #pro_servo_ids==0 then return 1 end
   local servo_pos=DXL.pro_read_position(pro_servo_ids)
@@ -384,6 +390,7 @@ while running do
 
   if t>t_last_debug + 0.5 then
   -- if t>t_last_debug + 0.2 then
+    local batt=read_xm_voltage()
     local t1=unix.time()
     local t_elapsed=t1-t0
     t_last_debug=t
@@ -396,14 +403,18 @@ while running do
         local dcm_idx=Config.servo.dynamixel_map[i]
         local pos, cmd_pos, tenable=cur_pos[dcm_idx],cur_cpos[dcm_idx],torque_enabled[dcm_idx]
         -- str=str..string.format("[ID%d pos%.1f cpos%.1f]",Config.servo.dynamixel_ids[i],pos/DEG_TO_RAD, cmd_pos/DEG_TO_RAD)
+
+        local pstr=string.format("#%d:%.1f",Config.servo.dynamixel_ids[i],pos/DEG_TO_RAD)
         if tenable>0 then
-          str=str..string.format("[ID%d pos%.1f cpos%d]",Config.servo.dynamixel_ids[i],pos/DEG_TO_RAD, cmd_pos/DEG_TO_RAD)
+          str=str.."[".. util.color(pstr,'green').."]"
+          -- str=str..string.format("[ID%d pos%.1f cpos%d]",Config.servo.dynamixel_ids[i],pos/DEG_TO_RAD, cmd_pos/DEG_TO_RAD)
         else
-          str=str..string.format("<ID%d pos%.1f cpos%d>",Config.servo.dynamixel_ids[i],pos/DEG_TO_RAD, cmd_pos/DEG_TO_RAD)
+          str=str.."[".. util.color(pstr,'yellow').."]"
+          -- str=str..string.format("<ID%d pos%.1f cpos%d>",Config.servo.dynamixel_ids[i],pos/DEG_TO_RAD, cmd_pos/DEG_TO_RAD)
         end
       end
       local hz=count/t_elapsed
-      local dxl_str=string.format("DXL: %.1f" , count/t_elapsed)
+      local dxl_str=string.format("DXL: %.1fHz / %.1f V" , count/t_elapsed,math.max(unpack(batt))/10 )
       if hz<10 then print(util.color(dxl_str,'red')..str)
       else print(util.color(dxl_str,'green')..str) end
     end
