@@ -20,19 +20,19 @@ all none: modules modules2 robots
 #	@ln -s $(CWD)/Config/$@/$(VAR)/Config_$@_$(VAR).lua $(CWD)/Config/Config.lua
 #endif
 
-	@rm -f $(CWD)/Webots/worlds
-	@ln -s $(CWD)/Robots/$@/Webots/worlds $(CWD)/Webots/worlds
+#	@rm -f $(CWD)/Webots/worlds
+#	@ln -s $(CWD)/Robots/$@/Webots/worlds $(CWD)/Webots/worlds
 # @rm -f $(CWD)/RunRobot/*.lua
 # @rm -f $(CWD)/RunRobot/*.sh
 # @rm -f $(CWD)/RunRobot/*.py
-	@mkdir -p $(CWD)/RunRobot/
-	@rm -f $(CWD)/RunRobot/*
-	@ls $(CWD)/RunRobot/
+#	@mkdir -p $(CWD)/RunRobot/
+#	@rm -f $(CWD)/RunRobot/*
+#	@ls $(CWD)/RunRobot/
 # @ln -s $(CWD)/Robots/$@/RunRobot/*.* $(CWD)/RunRobot/
-	@ln -s $(CWD)/Robots/$@/RunRobot/* $(CWD)/RunRobot/
-	@ln -s $(CWD)/Run/*.lua $(CWD)/RunRobot/
-	@rm -f $(CWD)/Memory/*.lua
-	@ln -s $(CWD)/Robots/$@/Memory/*.lua $(CWD)/Memory/
+#	@ln -s $(CWD)/Robots/$@/RunRobot/* $(CWD)/RunRobot/
+#	@ln -s $(CWD)/Run/*.lua $(CWD)/RunRobot/
+#	@rm -f $(CWD)/Memory/*.lua
+#	@ln -s $(CWD)/Robots/$@/Memory/*.lua $(CWD)/Memory/
 	@cd $(CWD) && luajit gen_start_script.lua
 
 modules:

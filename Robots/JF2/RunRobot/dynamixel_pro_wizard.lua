@@ -1,1 +1,0 @@
-../../../Modules2/DynamixelNew/dynamixel_pro_wizard.lua

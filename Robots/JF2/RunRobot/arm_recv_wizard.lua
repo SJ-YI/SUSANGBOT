@@ -1,1 +1,0 @@
-../../../Modules/rmdmotor/mitmotor_arm/arm_recv_wizard.lua
