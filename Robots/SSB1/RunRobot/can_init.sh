@@ -1,1 +1,0 @@
-../../../Modules/rmdmotor/mitmotor_arm/can_init.sh
