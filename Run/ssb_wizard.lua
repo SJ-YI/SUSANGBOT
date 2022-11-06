@@ -4,6 +4,8 @@ local ok = pcall(dofile,'../fiddle.lua')
 if not ok then dofile'fiddle.lua' end
 local PI=3.14159265
 
+unix.usleep(1E6*1.5)
+
 local T=require'Transform'
 local Body=require 'Body'
 require'hcm'
