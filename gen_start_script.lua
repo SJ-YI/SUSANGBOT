@@ -31,7 +31,7 @@ end
 str=str.."tmux split-window -v\n"
 
 
-local pre_str="tmux send \"source ~/.bashrc\" C-m\ntmux send \"cd RunRobot\" C-m\n"
+local pre_str="tmux send \"source ~/.bashrc\" C-m\ntmux send \"cd Run\" C-m\n"
 if Config.robot_startup.ros_dep then
 	for j=1,#Config.robot_startup.ros_dep do
 		pre_str=pre_str.."tmux send \""..Config.robot_startup.ros_dep[j].."\" C-m\n"
