@@ -4,6 +4,8 @@ local ok = pcall(dofile,'../fiddle.lua')
 if not ok then ok=pcall(dofile,'./fiddle.lua') end
 if not ok then ok=dofile'../../fiddle.lua' end
 require'mcm'
+require'hcm'
+local si = require'simple_ipc'
 
 local use_ros,rospub=false,nil
 local send_cmd_vel=false
@@ -17,45 +19,12 @@ local signal = require'signal'.signal
 local gettime = require'unix'.time
 
 
-if Config.PLATFORM_NAME=="UR10" then
-	print("UR10!!!")
-	use_ros=true
-	rospub = require 'hsr_rospub'
-	rospub.init('xb360_pub')
-	not_tb3=false
-	is_ur10=true
-else
-	if #arg>0 then
-		if arg[1]=="stb" then
-			print("Turtlebot 3 xbox 360 ros sender!!!")
-			use_ros=true
-			rospub=require'tb3_rospub'
-			rospub.init('xb360_pub')
-			not_tb3=false
-
-		elseif arg[1]=="tb3" then
-			print("Super turtlebot 3 xbox 360 ros sender!!!")
-			use_ros=true
-			rospub=require'tb3_rospub'
-			rospub.init('xb360_pub')
-			send_cmd_vel=true
-			not_tb3=false
-		elseif arg[1]=="mb1" then
-			print("Super turtlebot 3 xbox 360 ros sender!!!")
-			use_ros=true
-			rospub=require'tb3_rospub'
-			rospub.init('xb360_pub')
-			send_cmd_vel=true
-		end
-	end
-end
+-- use_ros=true
+-- rospub=require'tb3_rospub'
+-- rospub.init('xb360_pub')
+-- not_tb3=false
 
 
-require'gcm'
-require'hcm'
-
-gcm.set_processes_xb360({1,0,0})
-local si = require'simple_ipc'
 
 local tDelay = 0.005*1E6
 local running = true
@@ -142,20 +111,13 @@ local function update(ret)
   end
 
   if t-t_last_debug>t_debug_interval then
-    print(
-      string.format(
+    print(string.format(
       "Dpad:%d %d LStick:%d %d RStick:%d %d LT%d RT%d",
-      ret.dpad[1],ret.dpad[2],
-      ret.lstick[1],ret.lstick[2],
-      ret.rstick[1],ret.rstick[2],
-      ret.trigger[1],ret.trigger[2])
-      ..
-      string.format("Buttons:%d%d%d%d%d%d%d%d%d",
-        unpack(ret.buttons))
+      ret.dpad[1],ret.dpad[2],  ret.lstick[1],ret.lstick[2],  ret.rstick[1],ret.rstick[2],  ret.trigger[1],ret.trigger[2])
+      .. string.format("Buttons:%d%d%d%d%d%d%d%d%d",  unpack(ret.buttons))
     )
     t_last_debug=t
   end
-
 
 	hcm.set_xb360_dpad({ret.dpad[1],ret.dpad[2]})
 	hcm.set_xb360_buttons(ret.buttons)
@@ -164,78 +126,30 @@ local function update(ret)
 	hcm.set_xb360_trigger(ret.trigger)
 
 
-	if is_ur10 then
-		if ret.buttons[4]>0 then --Right shoulder button: Image grab
-
-			rospub.hsrbcommand(4) --image log command: 3
-			t_last_button=t+0.2 --0.5 sec delay
-			os.execute('espeak "log"')
-		end
-
-
-		return
-	end
-
-	if not_tb3 then return end
-
-
-
-	if t-t_last_button>0.3 and use_ros then
-		if ret.dpad[1]==1 and ret.dpad[2]==0 then --up
-			hcm.set_base_speedfactor(1)
-		end
-		if ret.dpad[1]==0 and ret.dpad[2]==-1 then --right
-			hcm.set_base_speedfactor(0.75)
-		end
-		if ret.dpad[1]==-1 and ret.dpad[2]==0 then --down
-			hcm.set_base_speedfactor(0.5)
-		end
-
-
-		if ret.buttons[4]>0 then --Right shoulder button: Image grab
-			rospub.hsrbcommand(4) --image log command: 3
-			t_last_button=t+0.2 --0.5 sec delay
-			os.execute('espeak "log start"')
-		--			rospub.voice("letsgo.mp3")
-		end
-		if ret.buttons[3]>0 then --Right shoulder button: Image grab
-			rospub.hsrbcommand(3) --image log command: 3
-			t_last_button=t+0.2 --0.5 sec delay
-			os.execute('espeak "log end"')
-		--			rospub.voice("letsgo.mp3")
-		end
-		--
-		if ret.buttons[6]>0 then  --X button, toggle gripper
-			rospub.hsrbcommand(11) --reset 1
-			print("MOTOR POWER ON!!!")
-			rospub.motorpower(1)
-			os.execute('espeak "reset"')
-			t_last_button=t+0.5 --0.5 sec delay
-		end
-
-		if ret.buttons[7]>0 then  --Y button... reset and start
-			rospub.hsrbcommand(12) --reset 1
-			os.execute('espeak "reset for obstacle"')
-			t_last_button=t+0.5 --0.5 sec delay
-		end
-
-		if ret.buttons[8]>0 then  --Y button... reset and start
-			rospub.hsrbcommand(13) --reset 1
-			os.execute('espeak "reset for park"')
-			t_last_button=t+0.5 --0.5 sec delay
-		end
-
-		if ret.buttons[9]>0 then  --Y button... reset and start
-			rospub.hsrbcommand(14) --reset 1
-			--rospub.motorpower(0)
-			os.execute('espeak "reset for maze"')
-			t_last_button=t+0.5 --0.5 sec delay
-		end
-
-
-		if ret.buttons[2]>0 then --START button: start process
-			rospub.hsrbcommand(1) --reset 1
-			t_last_button=t+0.5 --0.5 sec delay
+	if use_ros then
+		if t-t_last_button>0.5 then
+			if ret.buttons[1]==1 then --START and STOP MAPPING
+				print("MAPPING START!!!!!!!!!")
+				os.execute("espeak 'mapping'")
+				rospub.mapcmd(1)
+				t_last_button=t
+			end
+			if ret.buttons[2]==1 then --START and STOP MAPPING
+				print("GAME START!!!!!!!!!")
+				os.execute("espeak 'start'")
+				rospub.mapcmd(9)
+				t_last_button=t
+			end
+			if ret.buttons[4]==1 then --ADD MARKER
+				os.execute("espeak 'add'")
+				rospub.mapcmd(3)
+				t_last_button=t
+			end
+			if ret.buttons[3]==1 then --REMOVE MARKER
+				os.execute("espeak 'remove'")
+				rospub.mapcmd(4)
+				t_last_button=t
+			end
 		end
 
 	end
@@ -259,19 +173,13 @@ local function sendcmd()
   local d1=math.sqrt(curvel[1]*curvel[1]+curvel[2]*curvel[2])
   local d2=math.sqrt(targetvel[1]*targetvel[1]+targetvel[2]*targetvel[2])
 
-  if not (targetvel[1]==0 and targetvel[2]==0 and targetvel[3]==0) then
-    last_control_t = t
-    -- print"UPD"
-  end
+  if not (targetvel[1]==0 and targetvel[2]==0 and targetvel[3]==0) then last_control_t = t end
 --print(unpack(curvel))
-
 
   if t-last_control_t<1.5 then
 		if use_ros then
 			if send_cmd_vel then
-
 				print("Vel:",curvel[1],curvel[3])
-
 				rospub.cmdvel(curvel[1],curvel[2],curvel[3])
 			else
 				rospub.baseteleop(curvel[1],curvel[2],curvel[3])
@@ -279,12 +187,10 @@ local function sendcmd()
 		else
 			hcm.set_base_teleop_t(t)
 			hcm.set_base_teleop_velocity({curvel[1],curvel[2],curvel[3]})
-			--print(unpack(curvel))
 		end
   end
   t_last_sent=t
 end
-
 
 while running do
   local ret = xbox360.read()
@@ -292,7 +198,7 @@ while running do
   sendcmd()
   unix.usleep(1e6*0.05) --20fps
   local gccount = gcm.get_processes_xb360()
-  gcm.set_processes_xb360({2,gccount[2]+1,gccount[3]})
+  -- gcm.set_processes_xb360({2,gccount[2]+1,gccount[3]})
   if gcm.get_game_selfdestruct()==1 then
   	os.execute("mpg321 ~/Desktop/ARAICodes/Media/selfdestruct.mp3")
   	os.execute('sync')
