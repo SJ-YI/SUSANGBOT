@@ -8,6 +8,9 @@ local T=require'Transform'
 local Body=require 'Body'
 require'hcm'
 
+local rospub = require 'rospub_core'
+rospub.init('ssb_rospub')
+
 
 Body.set_torque_enable(Config.servo.torque_enable)
 Body.set_arm_torque_enable({1,1,1,1, 1,1,1,1})
@@ -94,13 +97,12 @@ local last_wheel_pos=nil
 
 local function update_wheel()
   local wheel_r, body_r=0.05, 0.14
-   --v1= -0.86602 vx - 0.5 vy - r*va
-   --v2=   vy                 - r*va
-   --v3=  0.86602 vx - 0.5 vy - r*va
-    local xcomp=vector.new( {-0.86602,0, 0.86602} )/wheel_r
-    local ycomp=vector.new( {-0.5, 1, -0.5 } )/wheel_r
-    local acomp=vector.new( {-body_r, -body_r, -body_r} )/wheel_r
-
+ --v1= -0.86602 vx - 0.5 vy - r*va
+ --v2=   vy                 - r*va
+ --v3=  0.86602 vx - 0.5 vy - r*va
+  local xcomp=vector.new( {-0.86602,0, 0.86602} )/wheel_r
+  local ycomp=vector.new( {-0.5, 1, -0.5 } )/wheel_r
+  local acomp=vector.new( {-body_r, -body_r, -body_r} )/wheel_r
 
   local t= unix.time()
   local t_cmd=hcm.get_base_teleop_t()
@@ -110,11 +112,9 @@ local function update_wheel()
     local wheel_vel = xcomp*teleop_vel[1] + ycomp*teleop_vel[2] + acomp*teleop_vel[3] --rad per sec
     local v1mag,v2mag,v3mag=math.abs(wheel_vel[1]),math.abs(wheel_vel[2]),math.abs(wheel_vel[3])
     local vmagmax=math.max(math.max(v1mag,v2mag),v3mag)
-
-    if vmagmax>2*PI then 
+    if vmagmax>2*PI then
       local adj_factor = (vmagmax/(2*PI))
-      wheel_vel[1],wheel_vel[2],wheel_vel[3]=	
-        wheel_vel[1]/adj_factor,wheel_vel[2]/adj_factor,wheel_vel[3]/adj_factor
+      wheel_vel[1],wheel_vel[2],wheel_vel[3]=	wheel_vel[1]/adj_factor,wheel_vel[2]/adj_factor,wheel_vel[3]/adj_factor
     end
     Body.set_wheel_command_velocity(wheel_vel)
   else
@@ -129,23 +129,21 @@ local function update_wheel()
     util.mod_angle(wheel_pos[2]-last_wheel_pos[2])*wheel_r,
     util.mod_angle(wheel_pos[3]-last_wheel_pos[3])*wheel_r
   last_wheel_pos=wheel_pos
-
   --vx = [-0.57735 0 0.57735] [v1 v2 v3]'
   --vy = [-0.333333 0.666666 -0.33333333] [v1 v2 v3]'
   --va = [2.38095 2.38095 2.38095] [v1 v2 v3]'
-
   local dx=-0.57735*d1 + 0.57735*d3
   local dy=(-d1+2*d2-d3)/3
   local da=-(d1+d2+d3)/3/body_r
-
-  local curpos=wcm.get_robot_pose()
+  local curpos=wcm.get_robot_pose_odom()
   local newpos=util.pose_global({dx,dy,da},curpos)
-  wcm.set_robot_pose(newpos)
+  wcm.set_robot_pose_odom(newpos)
+	rospub.tf({newpos[1], newpos[2],0},{0,0,newpos[3]}, "map","odom")
 --  print(string.format("Pose: %.2f %.2f %.1f",newpos[1],newpos[2],newpos[3]/DEG_TO_RAD ))
 end
 
 Body.set_arm_command_position(armangle0)
-wcm.set_robot_pose({0,0,0})
+wcm.set_robot_pose_odom({0,0,0})
 
 local getch = require'getch'
 local running = true
