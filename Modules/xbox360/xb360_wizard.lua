@@ -17,9 +17,10 @@ local util = require'util'
 local xbox360 = require 'xbox360'
 local signal = require'signal'.signal
 local gettime = require'unix'.time
+rospub=require'tb3_rospub'
+rospub.init('xb360_pub')
 
-
--- use_ros=true
+use_ros=true
 -- rospub=require'tb3_rospub'
 -- rospub.init('xb360_pub')
 -- not_tb3=false
@@ -189,7 +190,9 @@ local function sendcmd()
 --print(unpack(curvel))
 
   if t-last_control_t<1.5 then
-		if use_ros then
+
+--		if use_ros then
+		if nil then
 			if send_cmd_vel then
 				print("Vel:",curvel[1],curvel[3])
 				rospub.cmdvel(curvel[1],curvel[2],curvel[3])
