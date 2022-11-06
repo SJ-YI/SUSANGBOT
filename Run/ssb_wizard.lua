@@ -141,11 +141,7 @@ local function update_wheel()
   local curpos=wcm.get_robot_pose()
   local newpos=util.pose_global({dx,dy,da},curpos)
   wcm.set_robot_pose(newpos)
-
-
-  print(string.format("Pose: %.2f %.2f %.1f",newpos[1],newpos[2],newpos[3]/DEG_TO_RAD ))
-
-
+--  print(string.format("Pose: %.2f %.2f %.1f",newpos[1],newpos[2],newpos[3]/DEG_TO_RAD ))
 end
 
 Body.set_arm_command_position(armangle0)
@@ -158,7 +154,7 @@ while running do
   key_code = getch.nonblock()
   update(key_code)
   update_wheel()
-  unix.usleep(1E6*0.02)
+  unix.usleep(1E6*0.01)
 end
 
 Body.set_arm_torque_enable({0,0,0,0, 0,0,0,0})
