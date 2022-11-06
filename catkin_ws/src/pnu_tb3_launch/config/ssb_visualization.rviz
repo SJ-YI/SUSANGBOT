@@ -4,7 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /TF1/Frames1
+        - /TF1
       Splitter Ratio: 0.461024493
     Tree Height: 1084
   - Class: rviz/Selection
@@ -113,13 +113,15 @@ Visualization Manager:
       Frames:
         All Enabled: false
         base_footprint:
-          Value: false
+          Value: true
         base_scan:
           Value: false
         map:
+          Value: true
+        odom:
           Value: false
         scanmatcher_frame:
-          Value: true
+          Value: false
       Marker Scale: 0.5
       Name: TF
       Show Arrows: false
@@ -127,9 +129,10 @@ Visualization Manager:
       Show Names: true
       Tree:
         map:
-          base_footprint:
-            base_scan:
-              {}
+          odom:
+            base_footprint:
+              base_scan:
+                {}
           scanmatcher_frame:
             {}
       Update Interval: 0
@@ -218,7 +221,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 7.96852016
+      Distance: 7.01229763
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -257,4 +260,4 @@ Window Geometry:
     collapsed: false
   Width: 1520
   X: 3319
-  Y: 595
+  Y: 542
