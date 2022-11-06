@@ -138,8 +138,18 @@ local function update_wheel()
   local curpos=wcm.get_robot_pose_odom()
   local newpos=util.pose_global({dx,dy,da},curpos)
   wcm.set_robot_pose_odom(newpos)
-	rospub.tf({newpos[1], newpos[2],0},{0,0,newpos[3]}, "map","odom")
+
+-- Hector slam DOES NOT uses odometry info
+--  rospub.tf({newpos[1], newpos[2],0},{0,0,newpos[3]}, "map","odom")
 --  print(string.format("Pose: %.2f %.2f %.1f",newpos[1],newpos[2],newpos[3]/DEG_TO_RAD ))
+end
+
+local function save_map()
+  os.execute('rosrun map_server map_saver -f ~/Desktop/SUSANGBOT/Data/map')
+  unix.usleep(1E6)
+  os.execute('rosnode kill /hector_mapping')
+  os.execute('roslaunch pnu_tb3_launch ssb_amcl.launch &')
+  unix.usleep(1E6*3)
 end
 
 Body.set_arm_command_position(armangle0)

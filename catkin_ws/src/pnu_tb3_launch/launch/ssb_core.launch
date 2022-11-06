@@ -1,6 +1,7 @@
 <launch>
  <!-- Robot state publisher -->
   <node pkg="tf" type="static_transform_publisher" name="broadcaster1" args="0.10 0 0.12 3.141592 0 0 /base_footprint /base_scan 100" />
+
   <node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
     <param name="serial_port"         type="string" value="/dev/rplidar"/>
     <param name="serial_baudrate"     type="int"    value="115200"/><!--A1/A2 -->
@@ -9,9 +10,4 @@
     <param name="angle_compensate"    type="bool"   value="true"/>
   </node>
 
-  <include file="$(find hector_mapping)/launch/mapping_default.launch">
-    <arg name="base_frame" value="base_footprint"/>
-    <arg name="odom_frame" value="base_footprint"/>
-    <!-- <arg name="odom_frame" value="odom"/> -->
-  </include>
 </launch>
