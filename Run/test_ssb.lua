@@ -16,45 +16,21 @@ dcm.set_actuator_torque_enable_changed(1)
 
 
 local armangle0=vector.new({5,5,0,-30,   5,-5,0,-30,})*DEG_TO_RAD --POSE 0
---FOR SEPARATE ARM 2
--- local armangles={
---   vector.new({5,95,0,0,   -45,-45,60,-90})*DEG_TO_RAD, --POSE 1, left arm extend
---   vector.new({5,95,0,0,   5,-95,0,0})*DEG_TO_RAD, --POSE 2, both arm spread
---   vector.new({-45,45,-60,-90,   5,-95,0,0})*DEG_TO_RAD, --POSE 3, right arm extend
---
---   vector.new({5,45,0,0,   -170,-45,0,-60})*DEG_TO_RAD, --POSE 4, left down / right up
---   vector.new({-90,95,0,-90,   -90,-95,0,-90})*DEG_TO_RAD, --POSE 5, both arm up
---   vector.new({-170,45,0,-60,   5,-45,0,0})*DEG_TO_RAD, --POSE 6, left up/right down
---
---   vector.new({-170,45,0,-60,   -170,0,60,-90})*DEG_TO_RAD, --POSE 7, left up/right head
---   vector.new({-180,0,-60,-90,   -180,0,60,-90})*DEG_TO_RAD, --POSE 8, left head/right head
---   vector.new({-170,0,-60,-90,   -170,-45,0,-60})*DEG_TO_RAD, --POSE 9, left head/right up
---
---   vector.new({5,45,0,0,   5,-45,0,0,})*DEG_TO_RAD, --POSE 10, both low spread
--- }
-
---FOR SSB
 local armangles={
   vector.new({5,95,0,-30,   -90,-30,75,-90})*DEG_TO_RAD, --POSE 1, left arm extend
   vector.new({5,95,0,0,   5,-95,0,0})*DEG_TO_RAD, --POSE 2, both arm spread
   vector.new({-90,30,-75,-90,   5,-95,0,-30})*DEG_TO_RAD, --POSE 3, right arm extend
-
   vector.new({5,45,0,0,   -145,-45,0,-30})*DEG_TO_RAD, --POSE 4, left down / right up
   vector.new({-90,90,0,-90,   -90,-90,0,-90})*DEG_TO_RAD, --POSE 5, both arm up
   vector.new({-145,45,0,-30,   5,-45,0,0})*DEG_TO_RAD, --POSE 6, left up/right down
-
   vector.new({-145,45,0,-0,   -145,-30,75,-90})*DEG_TO_RAD, --POSE 7, left up/right head
   vector.new({-145,30,-60,-90,   -145,-30,60,-90})*DEG_TO_RAD, --POSE 8, left head/right head
   vector.new({-145,30,-60,-90,   -145,-45,0,0})*DEG_TO_RAD, --POSE 9, left head/right up
-
   vector.new({5,45,0,0,   5,-45,0,0,})*DEG_TO_RAD, --POSE 10, both low spread
 }
 
 
 local t_wait=2
-
-
-
 local t_last_pressed=unix.time()
 local function update(key_code)
   local t=unix.time()
@@ -113,19 +89,14 @@ local function update(key_code)
   end
 end
 
+
+local last_wheel_pos=nil
+
 local function update_wheel()
   local wheel_r, body_r=0.05, 0.14
-
---  local xcomp=vector.new( {-2,0, 2} )/wheel_r
---  local ycomp=vector.new( {-0.5,1,-0.5} )/wheel_r
---  local acomp=vector.new( {-body_r, -body_r, -body_r} )/wheel_r
-
-
-   --x left 
-   --v1= -0.5 vy + 0.86602 vx + r*va
-   --v2=   vy                 + r*va
-   --v3= -0.5 vy - 0.86602 vx + r*va
-
+   --v1= -0.86602 vx - 0.5 vy - r*va
+   --v2=   vy                 - r*va
+   --v3=  0.86602 vx - 0.5 vy - r*va
     local xcomp=vector.new( {-0.86602,0, 0.86602} )/wheel_r
     local ycomp=vector.new( {-0.5, 1, -0.5 } )/wheel_r
     local acomp=vector.new( {-body_r, -body_r, -body_r} )/wheel_r
@@ -145,17 +116,40 @@ local function update_wheel()
       wheel_vel[1],wheel_vel[2],wheel_vel[3]=	
         wheel_vel[1]/adj_factor,wheel_vel[2]/adj_factor,wheel_vel[3]/adj_factor
     end
-
     Body.set_wheel_command_velocity(wheel_vel)
-
-    -- print("vel:",unpack(teleop_vel))
   else
     hcm.set_base_teleop_velocity({0,0,0})
     Body.set_wheel_command_velocity({0,0,0})
   end
+
+  local wheel_pos=Body.get_wheel_position()
+  if not last_wheel_pos then last_wheel_pos=wheel_pos end
+  local d1,d2,d3=
+    util.mod_angle(wheel_pos[1]-last_wheel_pos[1])*wheel_r,
+    util.mod_angle(wheel_pos[2]-last_wheel_pos[2])*wheel_r,
+    util.mod_angle(wheel_pos[3]-last_wheel_pos[3])*wheel_r
+  last_wheel_pos=wheel_pos
+
+  --vx = [-0.57735 0 0.57735] [v1 v2 v3]'
+  --vy = [-0.333333 0.666666 -0.33333333] [v1 v2 v3]'
+  --va = [2.38095 2.38095 2.38095] [v1 v2 v3]'
+
+  local dx=-0.57735*d1 + 0.57735*d3
+  local dy=(-d1+2*d2-d3)/3
+  local da=-(d1+d2+d3)/3/body_r
+
+  local curpos=wcm.get_robot_pose()
+  local newpos=util.pose_global({dx,dy,da},curpos)
+  wcm.set_robot_pose(newpos)
+
+
+  print(string.format("Pose: %.2f %.2f %.1f",newpos[1],newpos[2],newpos[3]/DEG_TO_RAD ))
+
+
 end
 
 Body.set_arm_command_position(armangle0)
+wcm.set_robot_pose({0,0,0})
 
 local getch = require'getch'
 local running = true
