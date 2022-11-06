@@ -114,21 +114,37 @@ local function update(key_code)
 end
 
 local function update_wheel()
-  local wheel_r, body_r=0.05, 0.213
-  local xcomp=vector.new( {-2,0, 2} )/wheel_r
-  local ycomp=vector.new( {-0.5,1,-0.5} )/wheel_r
+  local wheel_r, body_r=0.05, 0.14
 
-  local acomp=vector.new( {-body_r, -body_r, -body_r} )/wheel_r
+--  local xcomp=vector.new( {-2,0, 2} )/wheel_r
+--  local ycomp=vector.new( {-0.5,1,-0.5} )/wheel_r
+--  local acomp=vector.new( {-body_r, -body_r, -body_r} )/wheel_r
+
+
+   --x left 
+   --v1= -0.5 vy + 0.86602 vx + r*va
+   --v2=   vy                 + r*va
+   --v3= -0.5 vy - 0.86602 vx + r*va
+
+    local xcomp=vector.new( {-0.86602,0, 0.86602} )/wheel_r
+    local ycomp=vector.new( {-0.5, 1, -0.5 } )/wheel_r
+    local acomp=vector.new( {-body_r, -body_r, -body_r} )/wheel_r
+
+
   local t= unix.time()
   local t_cmd=hcm.get_base_teleop_t()
   if t-t_cmd<0.5 then
     local teleop_vel=hcm.get_base_teleop_velocity()
     local v1,v2,v3=0,0,0 --right back left
-    -- local wheel_vel = xcomp*teleop_vel[1] + ycomp*teleop_vel[2] + acomp*teleop_vel[3] --rad per sec
+    local wheel_vel = xcomp*teleop_vel[1] + ycomp*teleop_vel[2] + acomp*teleop_vel[3] --rad per sec
+    local v1mag,v2mag,v3mag=math.abs(wheel_vel[1]),math.abs(wheel_vel[2]),math.abs(wheel_vel[3])
+    local vmagmax=math.max(math.max(v1mag,v2mag),v3mag)
 
-
-    local wheel_vel = xcomp*teleop_vel[1]*0.3  + ycomp*teleop_vel[2]*0.3 + acomp*teleop_vel[3]*0.3 --rad per sec
-
+    if vmagmax>2*PI then 
+      local adj_factor = (vmagmax/(2*PI))
+      wheel_vel[1],wheel_vel[2],wheel_vel[3]=	
+        wheel_vel[1]/adj_factor,wheel_vel[2]/adj_factor,wheel_vel[3]/adj_factor
+    end
 
     Body.set_wheel_command_velocity(wheel_vel)
 
