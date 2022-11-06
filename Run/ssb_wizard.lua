@@ -138,9 +138,7 @@ local function update_wheel()
   local curpos=wcm.get_robot_pose_odom()
   local newpos=util.pose_global({dx,dy,da},curpos)
   wcm.set_robot_pose_odom(newpos)
-
--- Hector slam DOES NOT uses odometry info
---  rospub.tf({newpos[1], newpos[2],0},{0,0,newpos[3]}, "map","odom")
+  rospub.tf({newpos[1], newpos[2],0},{0,0,newpos[3]}, "odom","base_footprint")
 --  print(string.format("Pose: %.2f %.2f %.1f",newpos[1],newpos[2],newpos[3]/DEG_TO_RAD ))
 end
 

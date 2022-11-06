@@ -56,7 +56,7 @@ Config.mit_arms={
 
 
 Config.servo=servo
-Config.max_acc={1.0, 1.0, 4.0}
-Config.max_vel={0.5, 0.5, 2.0}
+Config.max_acc={1.0, 1.0, 1.0}
+Config.max_vel={0.5, 0.5, 0.5}
 
 return Config
