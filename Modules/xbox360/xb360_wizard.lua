@@ -47,11 +47,19 @@ local product_id2 = 0x0291 --white receiver
 local product_id3 = 0x028e --short white receiver
 local product_id4 = 0x02a9 --new black receiver
 local dongle_not_found=true
+
+
+
+local use_white_dongle=true
+
+
 gcm.set_processes_xb360({1,0,0})
 
 while dongle_not_found and running do
 	ret=xbox360.check({product_id1,product_id2,product_id3,product_id4})
-	if ret then dongle_not_found=false;
+	if ret then 
+		print("donglefound:",ret)
+		dongle_not_found=false;
 	else
 		print("XB360: Dongle not found, waiting...")
 		unix.usleep(1e6*1) --20fps
@@ -85,7 +93,11 @@ local function update(ret)
 --BACK START LB RB XBOX X Y A B
   local x_db,x_max = 10,255
   local y_db,y_max = 8000,32768
-	local y_db_rot = 14000
+  local y_db_rot = 14000
+
+  if use_white_dongle then
+    y_db, y_max, y_db_rot = 20, 128, 60 
+  end 
 
   --Left/right trigger: forward and backward
   --Left stick L/R: rotate
