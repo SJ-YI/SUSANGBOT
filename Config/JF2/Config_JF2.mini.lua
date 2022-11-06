@@ -16,7 +16,7 @@ Config.robot_startup={
     {'xb360', },
     {'ssb', },
   },
-  start_processes={"roslaunch rplidar_ros rplidar.launch" }
+  start_processes={"roslaunch pnu_tb3_launch ssb_core.launch" }
 }
 
 Config.webots_startup={

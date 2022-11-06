@@ -12,6 +12,7 @@
 
   <include file="$(find hector_mapping)/launch/mapping_default.launch">
     <arg name="base_frame" value="base_footprint"/>
+    <arg name="odom_frame" value="base_footprint"/>
     <!-- <arg name="odom_frame" value="odom"/> -->
   </include>
 </launch>
