@@ -14,7 +14,7 @@ Config.robot_startup={
   start_wizards={
     {'dynamixel_pro', },
     {'xb360', },
---    {'state', },
+    {'ssb', },
   },
   start_processes={"roslaunch rplidar_ros rplidar.launch" }
 }
