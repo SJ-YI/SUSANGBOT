@@ -62,9 +62,13 @@ Config.wheels={
   acomp=vector.new( {-body_r, -body_r, -body_r} )/wheel_r,
 
   --wheel velocity to 2.5d vel
-  velxcomp={-0.57735,0,0.57735},
-  velycomp={-1/3, 2/3, -1/3},
-  velacomp={-1/3/body_r,-1/3/body_r,-1/3/body_r}
+  -- velxcomp={-0.57735,0,0.57735},
+  -- velycomp={-1/3, 2/3, -1/3},
+  -- velacomp={-1/3/body_r,-1/3/body_r,-1/3/body_r}
+
+  velxcomp=vector.new({-0.57735,-1/3, -1/3/body_r}),
+  velycomp=vector.new({0, 2/3, -1/3/body_r}),
+  velacomp=vector.new({0.57735,-1/3,-1/3/body_r})
 }
 
 
