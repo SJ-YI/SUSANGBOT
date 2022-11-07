@@ -2,6 +2,7 @@ local state = {}
 state._NAME = ...
 require'mcm'
 require'wcm'
+local PI=3.14159265
 
 local Body = require'Body'
 local t_entry, t_update, t_debug,t_command
