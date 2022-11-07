@@ -39,8 +39,8 @@ Config.pathplan={
   navigate_minvffin=0.1,
 
   navigate_r1 = 0.1,
---  navigate_r2 = 0.1,
-  navigate_r2 = 0.05,
+  navigate_r2 = 0.1,
+--  navigate_r2 = 0.05,
   navigate_rfin = 0.15,
 
   rotate_th1=0.3,
