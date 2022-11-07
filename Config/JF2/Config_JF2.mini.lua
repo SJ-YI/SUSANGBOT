@@ -14,7 +14,8 @@ Config.robot_startup={
   start_wizards={
     {'dynamixel_pro', },
     {'xb360', },
-    {'ssb', },
+    {'state', },
+--    {'ssb', },
   },
 --  start_processes={"roslaunch pnu_tb3_launch ssb_core.launch" }
   start_processes={"roslaunch pnu_tb3_launch ssb_all.launch" }

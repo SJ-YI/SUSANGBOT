@@ -38,6 +38,7 @@ shared.robot.lastqarm=vector.zeros(5)
 
 shared.task={}
 shared.task.num=vector.zeros(1)
+shared.task.index=vector.zeros(1)
 shared.task.action=vector.zeros(MAX_TASKS)
 shared.task.target=vector.zeros(MAX_TASKS)
 shared.task.isrunning=vector.zeros(1)
