@@ -1,6 +1,6 @@
 #!/usr/bin/env luajit
 local pwd = os.getenv'PWD'
-dofile'./fiddle.lua'
+dofile'../fiddle.lua'
 
 require'wcm'
 require'hcm'
