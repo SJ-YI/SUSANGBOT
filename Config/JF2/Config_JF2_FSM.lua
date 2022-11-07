@@ -4,62 +4,23 @@ local vector = require'vector'
 local fsm = {}
 -- Update rate in Hz
 fsm.update_rate = 200
-if IS_WEBOTS then
-  fsm.update_rate = 250
-end
 
 -- Which FSMs should be enabled?
-fsm.enabled = {
-  -- Head = true,
-  -- Motion = true,
-  -- Body = true,
-  Arm=true,
-}
+fsm.libraries = {}
+-- fsm.enabled = {Motion = true,Arm=true, Body=true}
 
-fsm.select = {
-  --Body = 'M2',
-  -- Motion = 'M2',
-  Arm='JF'
-}
+fsm.enabled = {}
 
-fsm.libraries = {
-  -- MotionLib = 'M1',
-}
+fsm.select = {Motion = 'Omni',Body = 'SSB',Arm='JF'}
+fsm.Motion = {{'motionIdle', 'init', 'motionOmni'},}
 fsm.Arm = {
   {'armIdle', 'init', 'armInit'},
   {'armInit', 'done', 'armTeleop'},
-  {'armTeleop', 'pickup', 'armPickup'},
-  {'armPickup', 'done', 'armTeleop'},
-  {'armTeleop', 'release', 'armRelease'},
-  {'armRelease', 'done', 'armTeleop'},
 }
-
---[[
 fsm.Body = {
-  {'bodyIdle', 'init', 'bodyInit'},
-  {'bodyInit', 'done', 'bodyTeleop'},
+  {'bodyIdle', 'start', 'bodyNavigate'},
+  {'bodyNavigate', 'done', 'bodyIdle'},
 }
-
-
-fsm.Motion = {
-  {'motionIdle', 'idle', 'motionIdle'},
-  {'motionIdle', 'init', 'motionBias'},
-
-  {'motionBias', 'done', 'motionInit'},
-
-  {'motionInit', 'done', 'motionStand'},
-  -- {'motionStand', 'walk', 'motionTrot'},
-  {'motionStand', 'walk', 'motionTrot2'},
---  {'motionStand', 'bound', 'motionBound'},
-  -- {'motionCrawl', 'stop', 'motionStand'},
-  {'motionTrot', 'stop', 'motionStand'},
-  {'motionTrot2', 'stop', 'motionStand'},
-  {'motionBound', 'stop', 'motionStand'},
-
---  {'motionStand', 'pronk', 'motionPronk'},
-  {'motionPronk', 'stop', 'motionStand'},
-}
---]]
 
 Config.fsm = fsm
 
