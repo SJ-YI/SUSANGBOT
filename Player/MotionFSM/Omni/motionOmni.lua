@@ -20,7 +20,7 @@ function state.entry()
   t_debug=t_entry
   t_last=t_entry
   t_command=t_entry
-  Body.set_wheel_torque_enable(3) --velocity mode
+
   poseLast=wcm.get_robot_pose()
   rossub.init('motioncontrol_sub')
   rospub.init('motioncontrol_pub')
@@ -28,6 +28,13 @@ function state.entry()
   hcm.set_base_teleop_t(0)
   hcm.set_base_velocity({0,0,0})
   wcm.set_robot_pose_odom({0,0,0})
+
+
+  -- Body.set_wheel_torque_enable(3) --velocity mode
+  Body.set_torque_enable(Config.servo.torque_enable)
+  Body.set_arm_torque_enable({1,1,1,1, 1,1,1,1})
+  Body.set_wheel_torque_enable({1,1,1})
+  dcm.set_actuator_torque_enable_changed(1)
 end
 
 
@@ -62,13 +69,11 @@ local function update_wheel()
     util.mod_angle(wheel_pos[2]-last_wheel_pos[2])*wheel_r,
     util.mod_angle(wheel_pos[3]-last_wheel_pos[3])*wheel_r
   last_wheel_pos=wheel_pos
-
   local odomvel=velxcomp*d1 + velycomp*d2 + velacomp*d3
   local curpos=wcm.get_robot_pose_odom()
   local newpos=util.pose_global(odomvel,curpos)
   wcm.set_robot_pose_odom(newpos)
   rospub.tf({newpos[1], newpos[2],0},{0,0,newpos[3]}, "odom","base_footprint")
---  print(string.format("Pose: %.2f %.2f %.1f",newpos[1],newpos[2],newpos[3]/DEG_TO_RAD ))
 end
 
 
@@ -88,6 +93,8 @@ end
 function state.exit()
   print(state._NAME..' Exit' )
   Body.set_wheel_command_velocity({0,0,0,0})
+  Body.set_arm_torque_enable({0,0,0,0, 0,0,0,0})
+  dcm.set_actuator_torque_enable_changed(1)
 end
 
 return state

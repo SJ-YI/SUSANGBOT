@@ -9,7 +9,7 @@ fsm.update_rate = 200
 fsm.libraries = {}
 -- fsm.enabled = {Motion = true,Arm=true, Body=true}
 
-fsm.enabled = {Motion = true}
+fsm.enabled = {Motion = true, Body=true}
 fsm.select = {Motion = 'Omni',Body = 'SSB',Arm='JF'}
 fsm.Motion = {{'motionIdle', 'init', 'motionOmni'},}
 fsm.Arm = {
@@ -17,8 +17,9 @@ fsm.Arm = {
   {'armInit', 'done', 'armTeleop'},
 }
 fsm.Body = {
-  {'bodyIdle', 'start', 'bodyNavigate'},
-  {'bodyNavigate', 'done', 'bodyIdle'},
+  {'bodyIdle', 'done', 'bodyIdle'},
+  -- {'bodyIdle', 'start', 'bodyNavigate'},
+  -- {'bodyNavigate', 'done', 'bodyIdle'},
 }
 
 Config.fsm = fsm

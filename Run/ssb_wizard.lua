@@ -15,11 +15,11 @@ local rospub = require 'tb3_rospub'
 rospub.init('ssb_rospub')
 rossub.init('ssb_rossub')
 local sub_idx_mapcmd=rossub.subscribeInt32('/mapcmd')
-
-Body.set_torque_enable(Config.servo.torque_enable)
-Body.set_arm_torque_enable({1,1,1,1, 1,1,1,1})
-Body.set_wheel_torque_enable({1,1,1})
-dcm.set_actuator_torque_enable_changed(1)
+--
+-- Body.set_torque_enable(Config.servo.torque_enable)
+-- Body.set_arm_torque_enable({1,1,1,1, 1,1,1,1})
+-- Body.set_wheel_torque_enable({1,1,1})
+-- dcm.set_actuator_torque_enable_changed(1)
 
 
 local armangle0=vector.new({5,5,0,-30,   5,-5,0,-30,})*DEG_TO_RAD --POSE 0
@@ -47,11 +47,6 @@ local function update(key_code)
   t_last_pressed=t
 	local key_char = string.char(key_code)
 	local key_char_lower = string.lower(key_char)
-  local targetvel_new=hcm.get_base_velocity()
-  local targetvel=hcm.get_base_velocity()
-
-  local cmd_vel=false
-  local cmd_motor=false
 
 	if key_char_lower==("1") then
     Body.set_arm_command_position(armangles[1])
@@ -96,47 +91,6 @@ local function update(key_code)
   end
 end
 
---
--- local last_wheel_pos=nil
--- local function update_wheel()
---   local wheel_r, body_r=Config.wheels.wheel_r, Config.wheels.body_r
---   local xcomp,ycomp,acomp=Config.wheels.xcomp,Config.wheels.ycomp,Config.wheels.acomp
---   local velxcomp,velycomp,velacomp=Config.wheels.velxcomp,Config.wheels.velycomp,Config.wheels.velacomp
---
---   local t= unix.time()
---   local t_cmd=hcm.get_base_teleop_t()
---   if t-t_cmd<0.5 then
---     local teleop_vel=hcm.get_base_teleop_velocity()
---     local v1,v2,v3=0,0,0 --right back left
---     local wheel_vel = xcomp*teleop_vel[1] + ycomp*teleop_vel[2] + acomp*teleop_vel[3] --rad per sec
---     local v1mag,v2mag,v3mag=math.abs(wheel_vel[1]),math.abs(wheel_vel[2]),math.abs(wheel_vel[3])
---     local vmagmax=math.max(math.max(v1mag,v2mag),v3mag)
---     if vmagmax>2*PI then
---       local adj_factor = (vmagmax/(2*PI))
---       wheel_vel[1],wheel_vel[2],wheel_vel[3]=	wheel_vel[1]/adj_factor,wheel_vel[2]/adj_factor,wheel_vel[3]/adj_factor
---     end
---     Body.set_wheel_command_velocity(wheel_vel)
---   else
---     hcm.set_base_teleop_velocity({0,0,0})
---     Body.set_wheel_command_velocity({0,0,0})
---   end
---
---   local wheel_pos=Body.get_wheel_position()
---   if not last_wheel_pos then last_wheel_pos=wheel_pos end
---   local d1,d2,d3=
---     util.mod_angle(wheel_pos[1]-last_wheel_pos[1])*wheel_r,
---     util.mod_angle(wheel_pos[2]-last_wheel_pos[2])*wheel_r,
---     util.mod_angle(wheel_pos[3]-last_wheel_pos[3])*wheel_r
---   last_wheel_pos=wheel_pos
---
---   local odomvel=velxcomp*d1 + velycomp*d2 + velacomp*d3
---   local curpos=wcm.get_robot_pose_odom()
---   local newpos=util.pose_global(odomvel,curpos)
---   wcm.set_robot_pose_odom(newpos)
---   rospub.tf({newpos[1], newpos[2],0},{0,0,newpos[3]}, "odom","base_footprint")
--- --  print(string.format("Pose: %.2f %.2f %.1f",newpos[1],newpos[2],newpos[3]/DEG_TO_RAD ))
--- end
-
 
 local t_start=unix.time()
 
@@ -154,42 +108,39 @@ local function check_map_command()
 				os.execute('roslaunch pnu_tb3_launch ssb_slam.launch &')
 				is_mapping=true
 			else
-
 				local robot_pose=rossub.checkTF("map","base_footprint")
-				if not robot_pose then
-                                  print("No tf, returning")
-                                else
-				local pose={robot_pose[1],robot_pose[2],robot_pose[6]}
-				print"ENDING SLAM!!!"
-				os.execute('rosrun map_server map_saver -f ~/Desktop/SUSANGBOT/Data/map')
-				unix.usleep(1E6*1)
-				print"RESTARTING AMCL!!!"
-				os.execute('rosnode kill /hector_mapping')
-				os.execute('roslaunch pnu_tb3_launch ssb_amcl.launch &')
-				unix.usleep(1E6*3)
-				rospub.posereset(pose)
-				print("POSE RESETTED TO",unpack(pose))
-				is_mapping=false
-                                end
+				if not robot_pose then print("No tf, returning")
+        else
+  				local pose={robot_pose[1],robot_pose[2],robot_pose[6]}
+  				print"ENDING SLAM!!!"
+  				os.execute('rosrun map_server map_saver -f ~/Desktop/SUSANGBOT/Data/map')
+  				unix.usleep(1E6*1)
+  				print"RESTARTING AMCL!!!"
+  				os.execute('rosnode kill /hector_mapping')
+  				os.execute('roslaunch pnu_tb3_launch ssb_amcl.launch &')
+  				unix.usleep(1E6*3)
+  				rospub.posereset(pose)
+  				print("POSE RESETTED TO",unpack(pose))
+  				is_mapping=false
+        end
 			end
     elseif mapcmd==99 then
       print("POSE RESET!!!")
       rospub.posereset({0,0,0})
-
 		elseif mapcmd==3 then
-                      print("MARKER ADDED")
+      print("MARKER ADDED")
 			local robot_pose=rossub.checkTF("map","base_footprint")
 			local pose={robot_pose[1],robot_pose[2],robot_pose[6]}
 --			marker_pose_list[#marker_pose_list+1]=pose
 --			save_markers()
 		elseif mapcmd==4 then
-print("MARKER REMOVE")
+      print("MARKER REMOVE")
 --			if #marker_pose_list>1 then
   --		  marker_pose_list[#marker_pose_list]=nil
 --			  save_markers()
 		--	end
 		elseif mapcmd==9 then
-print("MOVE START")
+      print("MOVE START")
 		--	rospub.posereset({0,0,0})
 		--	unix.usleep(1E6*1)
 		--	body_ch:send'start'
@@ -197,40 +148,16 @@ print("MOVE START")
 	end
 end
 
-
-
-
-
-
-
-
--- wcm.set_robot_pose_odom({0,0,0})
-
-
-
-
-
-local function save_map()
-  os.execute('rosrun map_server map_saver -f ~/Desktop/SUSANGBOT/Data/map')
-  unix.usleep(1E6)
-  os.execute('rosnode kill /hector_mapping')
-  os.execute('roslaunch pnu_tb3_launch ssb_amcl.launch &')
-  unix.usleep(1E6*3)
-end
-
 Body.set_arm_command_position(armangle0)
-
-
 local getch = require'getch'
 local running = true
 local key_code
 while running do
   key_code = getch.nonblock()
   update(key_code)
-  -- update_wheel()
   check_map_command()
   unix.usleep(1E6*0.01)
 end
 
-Body.set_arm_torque_enable({0,0,0,0, 0,0,0,0})
-dcm.set_actuator_torque_enable_changed(1)
+-- Body.set_arm_torque_enable({0,0,0,0, 0,0,0,0})
+-- dcm.set_actuator_torque_enable_changed(1)
