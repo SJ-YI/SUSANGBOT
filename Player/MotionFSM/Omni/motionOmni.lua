@@ -10,7 +10,7 @@ local cmd_vel={0,0,0}
 local rossub = require'rossub'
 local rospub = require 'tb3_rospub'
 local sub_idx_cmdvel
-local poseMoveStart={0,0,0}
+local poseMoveStart
 
 
 
@@ -24,13 +24,16 @@ function state.entry()
   t_last=t_entry
   t_command=t_entry
 
+
+  wcm.set_robot_pose_odom({0,0,0})
+
   poseLast=wcm.get_robot_pose()
+  poseMoveStart=wcm.get_robot_pose()
   rossub.init('motioncontrol_sub')
   rospub.init('motioncontrol_pub')
   sub_idx_cmdvel=rossub.subscribeTwist('/cmd_vel')
   hcm.set_base_teleop_t(0)
   hcm.set_base_velocity({0,0,0})
-  wcm.set_robot_pose_odom({0,0,0})
 
 
   -- Body.set_wheel_torque_enable(3) --velocity mode
@@ -40,6 +43,31 @@ function state.entry()
   dcm.set_actuator_torque_enable_changed(1)
 end
 
+
+
+local function move_robot(vel)
+  local xcomp,ycomp,acomp=Config.wheels.xcomp,Config.wheels.ycomp,Config.wheels.acomp
+  local v1,v2,v3=0,0,0 --right back left
+  local wheel_vel = xcomp*vel[1] + ycomp*vel[2] + acomp*vel[3] --rad per sec
+  local v1mag,v2mag,v3mag=math.abs(wheel_vel[1]),math.abs(wheel_vel[2]),math.abs(wheel_vel[3])
+  local vmagmax=math.max(math.max(v1mag,v2mag),v3mag)
+  if vmagmax>2*PI then
+    local adj_factor = (vmagmax/(2*PI))
+    wheel_vel[1],wheel_vel[2],wheel_vel[3]=	wheel_vel[1]/adj_factor,wheel_vel[2]/adj_factor,wheel_vel[3]/adj_factor
+  end
+
+  mcm.set_walk_vel(vel)
+
+  Body.set_wheel_command_velocity(wheel_vel)
+end
+
+
+
+
+
+
+local t_last_debug=unix.time()
+local t_debug_interval = 1
 
 local function follow_path(t,dt)
   local pose=wcm.get_robot_pose()
@@ -69,7 +97,7 @@ local function follow_path(t,dt)
     local drelpose=math.sqrt(relpose[1]*relpose[1]+relpose[2]*relpose[2])
     local arelpose = util.mod_angle(relpose[3])
     if t-t_last_debug>t_debug_interval then
-      print(string.format("Path :%d/%d dist:%.1f ang dist:%.1f",pathindex,pathnum,drelpose,arelpose))
+      print(string.format("Path :%d/%d dist:%.2f ang dist:%.1f",pathindex,pathnum,drelpose,arelpose))
       t_last_debug=t
     end
 
@@ -80,6 +108,8 @@ local function follow_path(t,dt)
       print(string.format("Target: %.3f %.3f (%.1f) Pose:%.3f %.3f (%.1f)",targetpose[1],targetpose[2],targetpose[3]/DEG_TO_RAD,pose[1],pose[2],pose[3]/DEG_TO_RAD))
       hcm.set_path_execute(0)
       move_robot({0,0,0})
+      poseMoveStart=wcm.get_robot_pose()
+
       return true
     end
 
@@ -95,9 +125,21 @@ local function follow_path(t,dt)
     local relpose,reloldpose=util.pose_relative(curtarget,pose),util.pose_relative(pose,poseMoveStart)
     local drelpose=math.sqrt(relpose[1]*relpose[1]+relpose[2]*relpose[2])
     local dreloldpose=math.sqrt(reloldpose[1]*reloldpose[1]+reloldpose[2]*reloldpose[2])
+
+
+    local debug_print=false
     if t-t_last_debug>t_debug_interval then
-      print(string.format("Path :%d/%d dist:%.1f",pathindex,pathnum,drelpose))
+
+      print(string.format("Start: (%.2f %.2f %.1f) Pose:(%.2f %.2f %.1f) Target: (%.2f %.2f %.1f",
+	poseMoveStart[1],	poseMoveStart[2],	poseMoveStart[3],
+	pose[1],pose[2],pose[3],
+        targetpose[1],targetpose[2],targetpose[3]
+	))
+
+
+      print(string.format("Path :%d/%d dist:%.2f",pathindex,pathnum,drelpose))
       t_last_debug=t
+      debug_print=true
     end
 
     if drelpose<Config.pathplan.waypoint_th then
@@ -132,15 +174,23 @@ local function follow_path(t,dt)
     local vellimitEnd =math.min(1.0,math.max(Config.pathplan.navigate_minvf2,drelpose/Config.pathplan.navigate_r2 ))
     local max_vel_acclim=max_vel*math.min(vellimitStart, vellimitEnd)
     local dirangle = math.atan2(relpose[2],relpose[1])
-    local dontgobackfactor=math.min(1,  math.max(0.2,  2- math.abs(util.mod_angle(dirangle))/(60*DEG_TO_RAD) ) )
-    local mvel=max_vel_acclim * dontgobackfactor
+--    local dontgobackfactor=math.min(1,  math.max(0.2,  2- math.abs(util.mod_angle(dirangle))/(60*DEG_TO_RAD) ) )
+--    local mvel=max_vel_acclim * dontgobackfactor
+    local mvel=max_vel_acclim 
+
+    if debug_print then
+--      print("Start dist:",dreloldpose)
+--      print("End dist:",drelpose)
+--      print("Max vel:",mvel)
+    end
+
+
     dx,dy=relpose[1]/drelpose*mvel,relpose[2]/drelpose*mvel
     local old_vel=mcm.get_walk_vel()
     local ddx=util.procFunc(dx-old_vel[1], 0, dt*Config.pathplan.max_acceleration)
     local ddy=util.procFunc(dy-old_vel[2], 0, dt*Config.pathplan.max_acceleration)
     dx=old_vel[1]+ddx
     dy=old_vel[2]+ddy
-
   end
   -- print("Vel:",dx,dy,da/DEG_TO_RAD)
   move_robot({dx,dy,da})
@@ -153,25 +203,14 @@ end
 
 
 
-local function move_robot(vel)
-  local xcomp,ycomp,acomp=Config.wheels.xcomp,Config.wheels.ycomp,Config.wheels.acomp
-  local v1,v2,v3=0,0,0 --right back left
-  local wheel_vel = xcomp*vel[1] + ycomp*vel[2] + acomp*vel[3] --rad per sec
-  local v1mag,v2mag,v3mag=math.abs(wheel_vel[1]),math.abs(wheel_vel[2]),math.abs(wheel_vel[3])
-  local vmagmax=math.max(math.max(v1mag,v2mag),v3mag)
-  if vmagmax>2*PI then
-    local adj_factor = (vmagmax/(2*PI))
-    wheel_vel[1],wheel_vel[2],wheel_vel[3]=	wheel_vel[1]/adj_factor,wheel_vel[2]/adj_factor,wheel_vel[3]/adj_factor
-  end
-  Body.set_wheel_command_velocity(wheel_vel)
-end
 
 
 function move_base(t,dt)
   local t_real=unix.time()
   local t_last=hcm.get_base_teleop_t()
+
   if(t_real-t_last<1.0) then
-    move_robot(hcm.get_base_velocity())
+    move_robot(hcm.get_base_teleop_velocity())
     hcm.set_path_execute(0)
     poseMoveStart=wcm.get_robot_pose()
   else
@@ -183,6 +222,7 @@ function move_base(t,dt)
       if path_execute==0 then
         mcm.set_walk_vel({0,0,0})
         move_robot({0,0,0})
+        poseMoveStart=wcm.get_robot_pose()
         return
       elseif path_execute==2 then
         follow_path(t,dt)

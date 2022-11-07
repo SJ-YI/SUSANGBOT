@@ -112,6 +112,7 @@ shared.base.teleop_t=vector.zeros(1)
 shared.base.teleop_velocity=vector.zeros(3)
 shared.base.command_velocity=vector.zeros(3)
 shared.base.velocity=vector.zeros(3)
+shared.base.velocity_t=vector.zeros(1)
 shared.base.target=vector.zeros(3)
 
 
