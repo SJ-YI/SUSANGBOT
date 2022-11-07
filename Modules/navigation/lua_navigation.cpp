@@ -37,7 +37,6 @@ int lua_init(lua_State *L){
 }
 
 
-
 int lua_process_smap(lua_State *L){
   smap_res = luaL_checknumber(L, 1);
   smap_x = luaL_checknumber(L, 2);
@@ -50,7 +49,7 @@ int lua_process_smap(lua_State *L){
 	int increase_factor=luaL_optnumber(L,9,3);
 
   memcpy(smap,data,smap_x*smap_y);
-  printf("Static map load completee %.3f x%d y%d zero (%.2f,%.2f,%.2f)\n",smap_res, smap_x,smap_y, smap_x0,smap_y0,smap_z0);
+  printf("Static map load completee %.3f w%d h%d zero (%.2f,%.2f,%.2f)\n",smap_res, smap_x,smap_y, smap_x0,smap_y0,smap_z0);
   //0: free space 100: obstacle 255: unknown
   // for(int i=0;i<smap_x*smap_y;i++){if (smap[i]!=255) printf("[%d]",smap[i]);}
   downsample_smap(downsample_factor,increase_factor);
@@ -114,65 +113,6 @@ int lua_get_lomap(lua_State *L){
   return 7;
 }
 
-int lua_reset_lomap(lua_State *L){
-	const char* data=luaL_checkstring(L, 1);
-  memcpy(lomap, data, lomap_size*lomap_size);
-	return 0;
-}
-
-int lua_add_obstacle(lua_State *L){
-	float obs_x = luaL_checknumber(L, 1);
-	float obs_y = luaL_checknumber(L, 2);
-	add_obstacle(obs_x,obs_y);
-	return 0;
-}
-
-
-int lua_check_empty_space(lua_State *L){
-  std::vector<double> target=lua_checkvector(L,1);
-	float radius=luaL_checknumber(L, 2);
-  int ret=check_empty_space(target[0],target[1],radius);
-	lua_pushnumber(L,ret);
-	return 1;
-}
-
-
-int lua_init_blank_smap(lua_State *L){
-  smap_res = luaL_checknumber(L, 1);
-  smap_x = luaL_checknumber(L, 2);
-  smap_y = luaL_checknumber(L, 3);
-  smap_x0 = luaL_checknumber(L, 4);
-  smap_y0 = luaL_checknumber(L, 5);
-  smap_z0 = luaL_checknumber(L, 6);
-	int downsample_factor=luaL_optnumber(L,7,1);
-	int increase_factor=luaL_optnumber(L,8,3);
-  // memset(smap,-1,smap_x*smap_y);
-	memset(smap,0,smap_x*smap_y);
-  downsample_smap(downsample_factor,increase_factor);
-  return 0;
-}
-
-
-int lua_update_rgbd(lua_State *L){
-	int num_pos=luaL_checknumber(L, 1);
-	float* xpos = (float*) lua_tostring(L,2);
-	float* ypos = (float*) lua_tostring(L,3);
-	std::vector<double> pose=lua_checkvector(L,4);
-	float radius = smap_z0 = luaL_checknumber(L, 5);
-
-	for(int i=0;i<num_pos;i++){
-		float dx,dy;
-		dx=pose[0] + cos(pose[2])*xpos[i] -sin(pose[2])*ypos[i];
-		dy=pose[1] + sin(pose[2])*xpos[i] +cos(pose[2])*ypos[i];
-		add_obstacle_direct(dx,dy,radius);
-	}
-
-	return 0;
-}
-
-
-
-
 
 static const struct luaL_Reg lib [] = {
 	{"init", lua_init},
@@ -180,16 +120,7 @@ static const struct luaL_Reg lib [] = {
   {"process_smap2", lua_process_smap2}, //for turtlebot
   {"get_lomap", lua_get_lomap},
   {"pathplan", lua_pathplan},
-
-	{"reset_lomap", lua_reset_lomap},
-	{"add_obstacle", lua_add_obstacle},
-
-	{"check_empty_space", lua_check_empty_space},
   // {"process_dmap", lua_process_dmap},
-
-	{"init_blank_smap", lua_init_blank_smap},
-	{"update_rgbd", lua_update_rgbd},
-
 	{NULL, NULL}
 };
 

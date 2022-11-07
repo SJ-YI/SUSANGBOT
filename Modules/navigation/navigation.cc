@@ -75,25 +75,6 @@ void set_lomap(int i, int j, int level){
     temp_lomap[j*lomap_size+i]=new_value;
 }
 
-void set_lomap2(int i, int j, int level){
-  int8_t new_value=obs_level[level];
-  //Expand only on free space  (to maintain hard obstacle border)
-  if (lomap[j*lomap_size+i]<new_value)  lomap[j*lomap_size+i]=new_value;
-}
-
-int get_lomap(int i, int j){
-	if ((i>=0)&&(j>=0)&&(i<LOMAP_SIZE)&&(j<LOMAP_SIZE)) return lomap[j*lomap_size+i];
-	else return 0;
-}
-
-
-
-
-
-
-
-
-
 void downsample_smap(int downsample_factor,int increase_factor){
 	lomap_res=smap_res*( (double) downsample_factor );
   lomap_x0=-lomap_res*((float)lomap_size-1)/2;
@@ -104,18 +85,15 @@ void downsample_smap(int downsample_factor,int increase_factor){
     get_lomap_pos(i,j,&xpos,&ypos);
     int sxi, syi;
     get_smap_index(xpos,ypos,&sxi,&syi);
-		if( (sxi>1) && (syi>1) && ( sxi<smap_x-1) && (syi<smap_y-1)){
-			int8_t max_value=-128;
-	    for(int ii=-1;ii<2;ii++){
-	      for(int jj=-1;jj<2;jj++){
-	        int sxii=sxi+ii;  int syii=syi+jj;
-	        // if (smap[syii*smap_y+sxii]>max_value) max_value=smap[syii*smap_y+sxii];
-					if (smap[syii*smap_x+sxii]>max_value) max_value=smap[syii*smap_x+sxii];
-	      }
-	    }
-	    lomap[j*lomap_size+i]=max_value;
-			// if(max_value!=-1) printf("%d ",max_value);
-		}
+    int8_t max_value=-128;
+    for(int ii=-1;ii<2;ii++){
+      for(int jj=-1;jj<2;jj++){
+        int sxii=sxi+ii;  int syii=syi+jj;
+        if (smap[syii*smap_y+sxii]>max_value) max_value=smap[syii*smap_y+sxii];
+      }
+    }
+    lomap[j*lomap_size+i]=max_value;
+		// if(max_value!=-1) printf("%d ",max_value);
   }
 	// expand low-res omap
   // memcpy(temp_lomap, lomap,lomap_size*lomap_size);
@@ -147,33 +125,6 @@ void downsample_smap(int downsample_factor,int increase_factor){
   }
 	memcpy(lomap,temp_lomap, lomap_size*lomap_size); //Copy inflated cost map back
 }
-
-
-void add_obstacle(float x, float y){
-	int i,j;
-	float increase_factor=2;
-
-	memcpy(temp_lomap, lomap, lomap_size*lomap_size); //Copy inflated cost map back
-	get_lomap_index(x,y,&i, &j);
-	printf("Obstacle: %.1f %.1f (%d %d)\n",x,y,i,j);
-	set_lomap(i,j,0);
-	for (int ii=-5;ii<=5;ii++){
-		for (int jj=-5;jj<=5;jj++){
-			float radius=sqrt(ii*ii+jj*jj);
-			// if (radius<=increase_factor-1.0) set_lomap(i+ii,j+jj,2);
-			if (radius<=increase_factor-1.0) set_lomap(i+ii,j+jj,2);
-			else{
-				if (radius<=increase_factor) set_lomap(i+ii,j+jj,3);
-			}
-		}
-	}
-	memcpy(lomap,temp_lomap, lomap_size*lomap_size); //Copy inflated cost map back
-}
-
-
-
-
-
 
 
 void downsample_smap2(){ //FOR TURTLEBOT!!!
@@ -373,7 +324,7 @@ int pathplan(float xpose,float ypose, float xtarget, float ytarget,int enhance){
  	get_lomap_index(xtarget,ytarget,&xindex1,&yindex1);
 
 
-
+	//for 201, 0.... 100 ... 200
 	// int ll=(lomap_size-1)/2;
 	// for (int x=ll+13;x>=ll-13;x--){
 	// 	for (int y=ll+13;y>=ll-13;y--){
@@ -435,53 +386,4 @@ int pathplan(float xpose,float ypose, float xtarget, float ytarget,int enhance){
     return 1;
  	}
   return 0;
-}
-
-
-int check_empty_space(float x, float y, float radius){
-	int i,j;
-	get_lomap_index(x,y,&i, &j);
-	int search_dim= floor(radius/lomap_res+0.5);
-
-	// int debug=1;
-	int debug=0;
-
-	//we may want up to 0.6 meter radius around the robot (12 pixels)
-	bool is_blocked=false;
-	for (int ii=search_dim;ii>=-search_dim;ii--){
-		for (int jj=search_dim;jj>=-search_dim;jj--){
-			float r=sqrt(ii*ii+jj*jj)*lomap_res;
-			int lmv=get_lomap(i+ii, j+jj);
-			if (r<radius) {
-				if ( (lmv>2)|| (lmv<0)) is_blocked=true;;
-			}
-			if(debug){
-
-				printf("%3d",lmv);
-				// if (lmv==-1) printf(".");
-				// if (lmv==1) printf(" ");
-				// if (lmv==2) printf("*");
-				// if (lmv>2) printf("O");
-			}
-		}
-		if(debug) printf("\n");
-	}
-	if (is_blocked) return 0;
-	else return 1;
-}
-
-
-void add_obstacle_direct(float x, float y,float increase_factor){
-	int i,j;
-	get_lomap_index(x,y,&i, &j);
-	set_lomap2(i,j,0);
-	for (int ii=-5;ii<=5;ii++){
-		for (int jj=-5;jj<=5;jj++){
-			float radius=sqrt(ii*ii+jj*jj);
-			if (radius<=increase_factor-1.0) set_lomap2(i+ii,j+jj,2);
-			else{
-				if (radius<=increase_factor) set_lomap2(i+ii,j+jj,3);
-			}
-		}
-	}
 }
