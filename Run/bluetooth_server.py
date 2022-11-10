@@ -1,8 +1,15 @@
+#!/usr/bin/env python
 import bluetooth
-    
+import rospy
+from std_msgs.msg import String
+
 name="bt_server"
 target_name="test"
 uuid="00001101-0000-1000-8000-00805F9B34FB"
+
+
+rospy.init_node('bluetooth_server')
+pub_bluetoothmsg=rospy.Publisher('bluetoothmsg',String,queue_size=2)
 
 def runServer():
     serverSocket=bluetooth.BluetoothSocket(bluetooth.RFCOMM )
@@ -24,6 +31,8 @@ def runServer():
     while(1):
         data=inputSocket.recv(1024)
         print "received [%s] \n " % data    
+	pub_bluetoothmsg.publish(data)
+
     inputSocket.close()
     serverSocket.close()  
 
