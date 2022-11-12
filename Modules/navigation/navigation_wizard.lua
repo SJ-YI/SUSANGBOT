@@ -31,7 +31,8 @@ local function rosio()
   if res then
     print("SMAP LOADED!!!!")
     -- navigation.process_smap(res,wid,hei,posx,posy,posz,dat,3,1)
-    navigation.process_smap(res,wid,hei,posx,posy,posz,dat,3,2)
+    -- navigation.process_smap(res,wid,hei,posx,posy,posz,dat,3,2)
+    navigation.process_smap(res,wid,hei,posx,posy,posz,dat,3,3) --increase more for safety
     lres, lw, lh, lpx, lpy, lpz, data=navigation.get_lomap()
     rospub.occgrid(lres,lw,lh,lpx,lpy,lpz,data)
   end
@@ -65,7 +66,7 @@ local function update_pathplan()
     print("TOO NEAR, DIRECT")
     xpaths={pose[1],posetarget[1]}
     ypaths={pose[2],posetarget[2]}
-   
+
     rospub.path(xpaths,ypaths,vector.zeros(#xpaths))
     local x,y=hcm.get_path_x(),hcm.get_path_y()
     for i=1,#xpaths do x[i],y[i]=xpaths[i],ypaths[i] end

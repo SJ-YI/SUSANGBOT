@@ -49,7 +49,7 @@ Config.mit_arms={
 
 Config.servo=servo
 Config.max_acc={1.0, 1.0, 1.0}
-Config.max_vel={0.5, 0.5, 0.5}
+Config.max_vel={0.5, 0.5, 1.0}
 
 local wheel_r, body_r=0.05, 0.14
 Config.wheels={
