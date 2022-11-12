@@ -415,6 +415,9 @@ while running do
       end
       local hz=count/t_elapsed
       local dxl_str=string.format("DXL: %.1fHz / %.1f V" , count/t_elapsed,math.max(unpack(batt))/10 )
+      local batt_level = math.max(unpack(batt))/10
+      mcm.set_status_battery(batt_level)
+
       if hz<10 then print(util.color(dxl_str,'red')..str)
       else print(util.color(dxl_str,'green')..str) end
     end
