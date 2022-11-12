@@ -49,9 +49,17 @@ Config.mit_arms={
 
 Config.servo=servo
 Config.max_acc={1.0, 1.0, 1.0}
-Config.max_vel={0.5, 0.5, 1.0}
+Config.max_vel={0.5, 0.5, 0.8}
 
-local wheel_r, body_r=0.05, 0.14
+local wheel_r=0.05
+--local body_r=0.14
+--local body_r=0.13 --this makes lidar turn FASTER
+--local body_r=0.137 --SLIGHTLF faster
+local body_r=0.138 --SLIGHTLF faster
+
+
+
+
 Config.wheels={
   wheel_r=wheel_r,
   body_r=body_r,
