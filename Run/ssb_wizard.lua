@@ -53,6 +53,31 @@ local function save_markers()
 	fp:close()
 end
 
+local function update_markers()
+	local types,posx,posy,posz,yaw,names,scales,colors={},{},{},{},{},{},{},{}
+	local scale, color1, color2, arrowlen = 1,2,4,0.20
+	local mc=0
+
+--	for i=1,#Config.pose_targets do
+	for i=1,#marker_pose_list do
+		local marker_name="origin"
+		if i>1 then	marker_name=string.format("Pose%02d",i-1)		end
+	  local x,y,a=
+		marker_pose_list[i][1],
+		marker_pose_list[i][2],
+		marker_pose_list[i][3]
+	  mc=mc+1        --LOCATION NAMES (string)
+	  types[mc],posx[mc],posy[mc],posz[mc],yaw[mc],names[mc],scales[mc],colors[mc]=
+	    2,     x-0.1,y,0,0,		marker_name,		1, 2
+	  mc=mc+1  --arrow
+	  types[mc],posx[mc],posy[mc],posz[mc],yaw[mc],names[mc],scales[mc],colors[mc]=
+	    5, 	x,y,0.01,   a,"x", arrowlen, color1
+	  mc=mc+1 --flat cylinder
+	  types[mc],posx[mc],posy[mc],posz[mc],yaw[mc],names[mc],scales[mc],colors[mc]=
+	    7,  x,y,0,	    a,"x", 0.5, color2
+	end
+  rospub.marker(mc,types,posx,posy,posz,yaw,names,scales,colors)
+end
 
 local function check_map_command()
 	local mapcmd=rossub.checkInt32(sub_idx_mapcmd)
