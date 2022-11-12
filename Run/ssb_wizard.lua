@@ -17,6 +17,8 @@ rossub.init('ssb_rossub')
 local sub_idx_mapcmd=rossub.subscribeInt32('/mapcmd')
 local is_mapping=false
 local t_start=unix.time()
+local t_entry=unix.time()
+
 
 local function save_markers()
 	local fp = io.open("/home/sj/markers.txt","w")
