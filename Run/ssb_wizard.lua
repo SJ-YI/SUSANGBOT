@@ -126,9 +126,10 @@ local function check_map_command()
 			end
 		elseif mapcmd==9 then
       print("MOVE START")
-		--	rospub.posereset({0,0,0})
-		--	unix.usleep(1E6*1)
-		--	body_ch:send'start'
+      wcm.set_task_index(1) --go from origin to pose #1
+			--rospub.posereset({0,0,0})
+		 	unix.usleep(1E6*1)
+		  body_ch:send'start'
 		end
 	end
 end

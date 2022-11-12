@@ -18,8 +18,10 @@ fsm.Arm = {
 }
 fsm.Body = {
   {'bodyIdle', 'done', 'bodyIdle'},
-  -- {'bodyIdle', 'start', 'bodyNavigate'},
-  -- {'bodyNavigate', 'done', 'bodyIdle'},
+  {'bodyIdle', 'start', 'bodyNavigate'},
+  {'bodyNavigate', 'done', 'bodyIdle'},
+  {'bodyNavigate', 'arrived', 'bodyWait'},
+  {'bodyWait','done','bodyNavigate'},
 }
 
 Config.fsm = fsm
