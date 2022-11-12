@@ -53,9 +53,9 @@ Config.max_vel={0.5, 0.5, 0.8}
 
 local wheel_r=0.05
 --local body_r=0.14
---local body_r=0.13 --this makes lidar turn FASTER
---local body_r=0.137 --SLIGHTLF faster
-local body_r=0.138 --SLIGHTLF faster
+--local body_r=0.15 --lidar turns very slightly more than actual robot
+--local body_r=0.155 --lidar turns very slightly less than actual robot 
+local body_r=0.152 
 
 
 
