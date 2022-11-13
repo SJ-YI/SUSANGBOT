@@ -24,7 +24,8 @@ local servo={}
 servo.min_rad = vector.ones(Config.nJoint)*-180*DEG_TO_RAD
 servo.max_rad = vector.ones(Config.nJoint)*180*DEG_TO_RAD
 -- servo.direction=vector.new({-1,-1,-1, 1,1,1,1,  1,1,1,1}) --INDEXED BY DCM
-servo.max_vel = vector.new({180,180,180,    180,180,180,180,  180,180,180,180})*DEG_TO_RAD--INDEXED BY DCM
+servo.max_vel = vector.ones(Config.nJoint)*360*DEG_TO_RAD
+--servo.max_vel = vector.new({180,180,180,    180,180,180,180,  180,180,180,180})*DEG_TO_RAD--INDEXED BY DCM
 servo.torque_enable={3,3,3, 1,1,1,1, 1,1,1,1} --for webots
 
 --DYNAMIXEL info
