@@ -18,6 +18,11 @@ rossub.init('ssb_rossub')
 local sub_idx_mapcmd=rossub.subscribeInt32('/mapcmd')
 local sub_idx_bluetoothmsg=rossub.subscribeString('/bluetoothmsg')
 
+
+
+
+
+
 local is_mapping=false
 local t_start=unix.time()
 local t_entry=unix.time()
