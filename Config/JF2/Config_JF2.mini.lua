@@ -19,7 +19,10 @@ Config.robot_startup={
     {'ssb', },
   },
 --  start_processes={"roslaunch pnu_tb3_launch ssb_core.launch" }
-  start_processes={"roslaunch pnu_tb3_launch ssb_all.launch" }
+  start_processes={
+    "roslaunch pnu_tb3_launch ssb_all.launch",
+    "python bluetooth_server.py"
+   }
 }
 
 Config.webots_startup={
