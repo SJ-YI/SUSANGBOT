@@ -16,6 +16,8 @@ local rospub = require 'tb3_rospub'
 rospub.init('ssb_rospub')
 rossub.init('ssb_rossub')
 local sub_idx_mapcmd=rossub.subscribeInt32('/mapcmd')
+local sub_idx_bluetoothmsg=rossub.subscribeString('/bluetoothmsg')
+
 local is_mapping=false
 local t_start=unix.time()
 local t_entry=unix.time()
@@ -81,6 +83,13 @@ end
 
 local function check_map_command()
 	local mapcmd=rossub.checkInt32(sub_idx_mapcmd)
+
+	local bluetoothcmd=rossub.checkString(sub_idx_bluetoothmsg)
+	if bluetoothcmd and unix.time()>t_entry+1.0 then
+		print("Bluetooth command:",bluetoothcmd)
+		os.execute('espeak '..bluetoothcmd)
+	end
+
 	if mapcmd and unix.time()>t_entry+1.0 then
 		print("MAP COMMAND:",mapcmd)
 		if mapcmd==1 then

@@ -15,25 +15,27 @@ def runServer():
     serverSocket=bluetooth.BluetoothSocket(bluetooth.RFCOMM )
     port=0
     serverSocket.bind(("",port))
-    print "Listening for connections on port: ", port   
+    print "Listening for connections on port: ", port
 
     serverSocket.listen(1)
     port=serverSocket.getsockname()[1]
 
     bluetooth.advertise_service( serverSocket, "SampleServer",
-                    service_id = uuid,
-                    service_classes = [ uuid, bluetooth.SERIAL_PORT_CLASS ],
-                    profiles = [ bluetooth.SERIAL_PORT_PROFILE ] 
-                    )
+      service_id = uuid,
+      service_classes = [ uuid, bluetooth.SERIAL_PORT_CLASS ],
+      profiles = [ bluetooth.SERIAL_PORT_PROFILE ]
+      )
 
     inputSocket, address=serverSocket.accept()
     print "Got connection with" , address
+    pub_bluetoothmsg.publish("Connected")
+
     while(1):
-        data=inputSocket.recv(1024)
-        print "received [%s] \n " % data    
-	pub_bluetoothmsg.publish(data)
+      data=inputSocket.recv(1024)
+      print "received [%s] \n " % data
+      pub_bluetoothmsg.publish(data)
 
     inputSocket.close()
-    serverSocket.close()  
+    serverSocket.close()
 
-runServer()  
+runServer()
