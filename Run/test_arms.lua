@@ -4,8 +4,14 @@ if string.find(pwd,"Run") then	dofile('../include.lua')
 else	dofile('../../include.lua') end
 
 local Body=require 'Body'
+--motiondata=require'motion0010'
 motiondata=require'motion0011'
+--motiondata=require'motion0013'
 print(#motiondata)
+
+Body.set_arm_torque_enable({1,1,1,1,1,1,1,1})
+dcm.set_actuator_torque_enable_changed(1)
+
 
 for i=1,#motiondata do
   local dat=motiondata[i]
