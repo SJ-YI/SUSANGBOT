@@ -9,7 +9,7 @@ fsm.update_rate = 200
 fsm.libraries = {}
 -- fsm.enabled = {Motion = true,Arm=true, Body=true}
 
-fsm.enabled = {Motion = true, Body=true}
+fsm.enabled = {Motion = true, Body=true, Arm=true}
 fsm.select = {Motion = 'Omni',Body = 'SSB',Arm='JF'}
 fsm.Motion = {{'motionIdle', 'init', 'motionOmni'},}
 fsm.Arm = {
