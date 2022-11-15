@@ -19,7 +19,7 @@ function state.entry()
   t_entry = Body.get_time()
   t_update = t_entry
   t_next_motion=t_entry
-
+  motion_index=1
 end
 
 function state.update()
