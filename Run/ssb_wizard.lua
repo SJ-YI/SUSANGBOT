@@ -97,6 +97,15 @@ local function check_map_command()
 		if bluetoothcmd=="dance1" then
 			body_ch:send'wait'
 			arm_ch:send'dance1'
+		elseif bluetoothcmd=="dance2" then
+				body_ch:send'wait'
+				arm_ch:send'dance2'
+		elseif bluetoothcmd=="dance3" then
+				body_ch:send'wait'
+				arm_ch:send'dance3'
+		elseif bluetoothcmd=="dance4" then
+				body_ch:send'wait'
+				arm_ch:send'dance4'
 		end
 
 
