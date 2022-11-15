@@ -9,7 +9,7 @@ local arm0
 local t_next_motion
 local motion_index=1
 
-local dance_index=1
+local dance_index=4
 local motionname=string.format("motionlog%04d",Config.dancemotion[dance_index])
 local motiondata=require(motionname)
 

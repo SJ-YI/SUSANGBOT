@@ -16,7 +16,13 @@ fsm.Arm = {
   {'armIdle', 'init', 'armInit'},
   {'armInit', 'done', 'armTeleop'},
   {'armTeleop', 'dance1', 'armDance1'},
+  {'armTeleop', 'dance2', 'armDance2'},
+  {'armTeleop', 'dance3', 'armDance3'},
+  {'armTeleop', 'dance4', 'armDance4'},
   {'armDance1', 'done', 'armIdle'},
+  {'armDance2', 'done', 'armIdle'},
+  {'armDance3', 'done', 'armIdle'},
+  {'armDance4', 'done', 'armIdle'},
 }
 fsm.Body = {
   {'bodyIdle', 'done', 'bodyIdle'},
