@@ -15,14 +15,31 @@ fsm.Motion = {{'motionIdle', 'init', 'motionOmni'},}
 fsm.Arm = {
   {'armIdle', 'init', 'armInit'},
   {'armInit', 'done', 'armTeleop'},
+  {'armTeleop', 'dance1', 'armDance1'},
+  {'armDance1', 'done', 'armIdle'},
 }
 fsm.Body = {
   {'bodyIdle', 'done', 'bodyIdle'},
   {'bodyIdle', 'start', 'bodyNavigate'},
   {'bodyNavigate', 'done', 'bodyIdle'},
   {'bodyNavigate', 'arrived', 'bodyWait'},
+
+  {'bodyIdle', 'interact', 'bodyInteract'},
+  {'bodyNavigate', 'interact', 'bodyInteract'},
+  {'bodyWait', 'interact', 'bodyInteract'},
+
+  {'bodyInteract','done','bodyNavigate'},
   {'bodyWait','done','bodyNavigate'},
 }
+
+Config.dancemotion={
+  26,
+  32,
+  36,
+  45
+}
+
+
 
 Config.fsm = fsm
 

@@ -93,6 +93,13 @@ local function check_map_command()
 	if bluetoothcmd and unix.time()>t_entry+1.0 then
 		print("Bluetooth command:",bluetoothcmd)
 		os.execute('espeak '..bluetoothcmd)
+
+		if bluetoothcmd=="dance1" then
+			body_ch:send'wait'
+			arm_ch:send'dance1'
+		end
+
+
 	end
 
 	if mapcmd and unix.time()>t_entry+1.0 then
