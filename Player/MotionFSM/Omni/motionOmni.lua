@@ -122,9 +122,9 @@ local function follow_path(t,dt)
 
     da,dx,dy=rotfactor*da2 + (1-rotfactor)*da1,relpose[1]/drelpose*max_vel_acclim,relpose[2]/drelpose*max_vel_acclim
 
-    if drelpose>Config.pathplan.omni_move_th then
-      if math.abs(da)>0.1 then dx,dy=0,0 end
-    end
+    -- if drelpose>Config.pathplan.omni_move_th then
+    --   if math.abs(da)>0.1 then dx,dy=0,0 end
+    -- end
 
 
 

@@ -82,8 +82,13 @@ Config.pathplan={
 --  navigate_r2 = 0.05,
   navigate_rfin = 0.15,
 
-  rotate_th1=0.3,
-  rotate_th2=0.5,--face the target at the final waypoint
+  --face the target at the final waypoint
+  -- rotate_th1=0.3,
+  -- rotate_th2=0.5,  --start at 0.3+0.5, and end at 0.5
+
+  rotate_th1=0.2,
+  rotate_th2=0.2,  --start at 0.2+0.2, and end at 0.2
+
 --  direct_angle_th=1 --roatate to target angle if closer than this
   direct_angle_th=0.6, --roatate to target angle if closer than this
 
