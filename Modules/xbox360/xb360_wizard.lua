@@ -163,7 +163,7 @@ local function update(ret)
 				rospub.mapcmd(4)
 				t_last_button=t
 			end
-			if ret.buttons[2]==8 then --START and STOP MAPPING
+			if ret.buttons[8]==1 then --RESET POSITION
 				os.execute("espeak 'reset'")
 				rospub.mapcmd(99)
 				t_last_button=t

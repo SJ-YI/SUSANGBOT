@@ -85,7 +85,9 @@ Config.pathplan={
   rotate_th1=0.3,
   rotate_th2=0.5,--face the target at the final waypoint
 --  direct_angle_th=1 --roatate to target angle if closer than this
-  direct_angle_th=0.6 --roatate to target angle if closer than this
+  direct_angle_th=0.6, --roatate to target angle if closer than this
+
+  omni_move_th=0.4 --dont allow omni movement if the target is far than this
 }
 
 -- Add all FSM directories that are in Player

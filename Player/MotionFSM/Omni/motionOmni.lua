@@ -109,17 +109,27 @@ local function follow_path(t,dt)
       hcm.set_path_execute(0)
       move_robot({0,0,0})
       poseMoveStart=wcm.get_robot_pose()
-
       return true
     end
 
     local vellimitStart =math.min(1.0,math.max(Config.pathplan.navigate_minvf1,dreloldpose/Config.pathplan.navigate_r1 ))
     local vellimitEnd =math.min(1.0,math.max(Config.pathplan.navigate_minvffin,drelpose/Config.pathplan.navigate_rfin ))
     local max_vel_acclim=max_vel*math.min(vellimitStart, vellimitEnd)
+
     local da1=util.procFunc(util.mod_angle(relpose[3])/(20*DEG_TO_RAD),0, 1)*max_avel
     local da2=util.procFunc(util.mod_angle(math.atan2(relpose[2],relpose[1]))/(20*DEG_TO_RAD),0, 1)*max_avel
     local rotfactor=math.min(1,math.max(0,(drelpose-Config.pathplan.rotate_th2)/Config.pathplan.rotate_th1))
+
     da,dx,dy=rotfactor*da2 + (1-rotfactor)*da1,relpose[1]/drelpose*max_vel_acclim,relpose[2]/drelpose*max_vel_acclim
+
+    if drelpose>Config.pathplan.omni_move_th then
+      if math.abs(da)>0.1 then dx,dy=0,0 end
+    end
+
+
+
+
+
   else --Not final waypoint
     local curtarget={pathx[pathindex],pathy[pathindex],0}
     local relpose,reloldpose=util.pose_relative(curtarget,pose),util.pose_relative(pose,poseMoveStart)
@@ -176,7 +186,7 @@ local function follow_path(t,dt)
     local dirangle = math.atan2(relpose[2],relpose[1])
 --    local dontgobackfactor=math.min(1,  math.max(0.2,  2- math.abs(util.mod_angle(dirangle))/(60*DEG_TO_RAD) ) )
 --    local mvel=max_vel_acclim * dontgobackfactor
-    local mvel=max_vel_acclim 
+    local mvel=max_vel_acclim
 
     if debug_print then
 --      print("Start dist:",dreloldpose)
