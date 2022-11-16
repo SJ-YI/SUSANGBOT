@@ -9,7 +9,7 @@ local t_entry, t_update, t_debug,t_command
 local cmd_vel={0,0,0}
 local rossub = require'rossub'
 local rospub = require 'tb3_rospub'
-local sub_idx_cmdvel
+local sub_idx_cmdvel, sub_idx_laserscan
 local poseMoveStart
 
 
@@ -32,6 +32,7 @@ function state.entry()
   rossub.init('motioncontrol_sub')
   rospub.init('motioncontrol_pub')
   sub_idx_cmdvel=rossub.subscribeTwist('/cmd_vel')
+  sub_idx_laserscan=rossub.subscribeLaserScan('/scan')
   hcm.set_base_teleop_t(0)
   hcm.set_base_velocity({0,0,0})
 
@@ -46,6 +47,10 @@ end
 
 
 local function move_robot(vel)
+
+
+
+
   local xcomp,ycomp,acomp=Config.wheels.xcomp,Config.wheels.ycomp,Config.wheels.acomp
   local v1,v2,v3=0,0,0 --right back left
   local wheel_vel = xcomp*vel[1] + ycomp*vel[2] + acomp*vel[3] --rad per sec
@@ -55,9 +60,7 @@ local function move_robot(vel)
     local adj_factor = (vmagmax/(2*PI))
     wheel_vel[1],wheel_vel[2],wheel_vel[3]=	wheel_vel[1]/adj_factor,wheel_vel[2]/adj_factor,wheel_vel[3]/adj_factor
   end
-
   mcm.set_walk_vel(vel)
-
   Body.set_wheel_command_velocity(wheel_vel)
 end
 
@@ -139,14 +142,8 @@ local function follow_path(t,dt)
 
     local debug_print=false
     if t-t_last_debug>t_debug_interval then
-
       print(string.format("Start: (%.2f %.2f %.1f) Pose:(%.2f %.2f %.1f) Target: (%.2f %.2f %.1f",
-	poseMoveStart[1],	poseMoveStart[2],	poseMoveStart[3],
-	pose[1],pose[2],pose[3],
-        targetpose[1],targetpose[2],targetpose[3]
-	))
-
-
+  	     poseMoveStart[1],	poseMoveStart[2],	poseMoveStart[3],pose[1],pose[2],pose[3],targetpose[1],targetpose[2],targetpose[3]))
       print(string.format("Path :%d/%d dist:%.2f",pathindex,pathnum,drelpose))
       t_last_debug=t
       debug_print=true
@@ -271,6 +268,10 @@ function state.update()
   local dt = t - t_update -- Save this at the last update time
   t_update = t
 
+  local ret= rossub.checkLaserScanPField(sub_idx_laserscan, 8, {0.10,0,0})
+  if ret then
+    print("PFIELD:",unpack(ret))
+  end
   -- local ret = rossub.checkTwist(sub_idx_cmdvel)
   -- if ret and t-t_entry>1 then
   --   hcm.set_base_velocity({ret[1],ret[2],ret[6]})
