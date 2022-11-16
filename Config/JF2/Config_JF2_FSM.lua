@@ -53,7 +53,7 @@ Config.dancemotion={
 }
 
 Config.startframe={
-  100,
+  100,  --good for dance 1
   60,  --60 and 98fps good for dance 2
   60,  --60 and 98fps good for dance 3
   40   --40 and 98fps good for dance 4
