@@ -88,8 +88,8 @@ Config.pathplan={
 
   direct_angle_th=0.6, --roatate to target angle if closer than this
 
-  pfield_soft_th = 0.6,
-  pfield_hard_th = 0.3,
+  pfield_soft_th = 0.4,
+  pfield_hard_th = 0.2,
 
 
 }

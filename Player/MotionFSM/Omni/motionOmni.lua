@@ -52,12 +52,40 @@ local function move_robot(vel)
   local fdist=pfield[5]
   local lfdist=pfield[6]
 
+  local pfield_hard_th=Config.pathplan.pfield_hard_th
+  local pfield_soft_th=Config.pathplan.pfield_soft_th
+  local pfield_soft_th2 = 0.3
+
   local vel_mag0=math.sqrt(vel[1]*vel[1] + vel[2]*vel[2])
-  if fdist<pfield_hard_th then vel[1]=0
+  if fdist<pfield_hard_th then vel[1]=math.min(0,vel[1])
   elseif fdist<pfield_soft_th and vel[1]>0 then
     local max_allowed_velx = (fdist-pfield_hard_th)/(pfield_soft_th-pfield_hard_th)*Config.pathplan.max_vel_webots
     vel[1]=math.min(vel[1],max_allowed_velx)
   end
+
+  if lfdist<pfield_soft_th2 and rfdist>pfield_soft_th2 then
+    local repul_factor = (lfdist-pfield_hard_th)/(pfield_soft_th2-pfield_hard_th)
+     local lf_approach_vel = (vel[1]+vel[2])/1.414 * repul_factor
+    if lf_approach_vel>0 then 
+      vel[1],vel[2]=vel[1]-lf_approach_vel,vel[2]-lf_approach_vel
+    end
+  elseif rfdist<pfield_soft_th2 and lfdist>pfield_soft_th2 then
+    local repul_factor = (rfdist-pfield_hard_th)/(pfield_soft_th2-pfield_hard_th)
+
+    local rf_approach_vel = (vel[1]-vel[2])/1.414*repul_factor
+    if rf_approach_vel>0 then
+      vel[1],vel[2]=vel[1]-rf_approach_vel,vel[2]+rf_approach_vel
+    end
+  end
+
+
+
+
+
+
+
+
+
   local vel_mag2=math.sqrt(vel[1]*vel[1] + vel[2]*vel[2])
 
   local xcomp,ycomp,acomp=Config.wheels.xcomp,Config.wheels.ycomp,Config.wheels.acomp
