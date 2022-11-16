@@ -17,7 +17,7 @@ function state.update()
   local dt = t - t_update
   t_update = t
   --we really don't need the bodyinit
-  if t-t_entry>3.0 then
+  if t-t_entry>1.0 then
     return "init" 
   end
 end

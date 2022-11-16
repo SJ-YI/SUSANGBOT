@@ -51,13 +51,15 @@ Config.dancemotion={
   45, -- pig market
   32 -- indian
 }
+
 Config.startframe={
   100,
-  30,
-  25,
-  25,
+  60,  --60 and 98fps good for dance 2
+  60,  --60 and 98fps good for dance 3
+  40   --40 and 98fps good for dance 4
 }
-Config.dance_fps=90
+Config.dance_fps=98
+
 
 Config.fsm = fsm
 
