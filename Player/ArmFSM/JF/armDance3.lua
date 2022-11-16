@@ -33,7 +33,7 @@ function state.update()
       Body.set_arm_command_position(armc)
     end
     motion_index=motion_index+1
-    t_next_motion=t_next_motion+0.01
+    t_next_motion=t_next_motion+(1/Config.dance_fps)
   end
   if motion_index>#motiondata then return "done" end
 end

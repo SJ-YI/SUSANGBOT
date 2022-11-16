@@ -53,10 +53,11 @@ Config.dancemotion={
 }
 Config.startframe={
   100,
-  -50,
-  1,
-  1,
+  30,
+  25,
+  25,
 }
+Config.dance_fps=90
 
 Config.fsm = fsm
 
