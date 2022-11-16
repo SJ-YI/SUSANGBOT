@@ -38,13 +38,19 @@ fsm.Body = {
   {'bodyWait','done','bodyNavigate'},
 }
 
-Config.dancemotion={
-  26,
-  32,
-  36,
-  45
-}
+-- Config.dancemotion={
+--   26, -- little rabbit
+--   32, -- spider
+--   36, -- indian
+--   45 -- pig market
+-- }
 
+Config.dancemotion={
+  32, -- spider
+  26, -- little rabbit
+  45 -- pig market
+  36, -- indian  
+}
 
 
 Config.fsm = fsm
