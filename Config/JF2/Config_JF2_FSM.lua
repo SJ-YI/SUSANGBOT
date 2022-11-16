@@ -48,8 +48,8 @@ fsm.Body = {
 Config.dancemotion={
   32, -- spider
   26, -- little rabbit
-  45 -- pig market
-  36, -- indian  
+  45, -- pig market
+  36 -- indian
 }
 
 
