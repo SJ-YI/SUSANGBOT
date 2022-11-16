@@ -58,7 +58,7 @@ gcm.set_processes_xb360({1,0,0})
 
 while dongle_not_found and running do
 	ret=xbox360.check({product_id1,product_id2,product_id3,product_id4})
-	if ret then 
+	if ret then
 		print("donglefound:",ret)
 		dongle_not_found=false;
 	else
@@ -97,8 +97,8 @@ local function update(ret)
   local y_db_rot = 14000
 
   if use_white_dongle then
-    y_db, y_max, y_db_rot = 20, 128, 60 
-  end 
+    y_db, y_max, y_db_rot = 20, 128, 60
+  end
 
   --Left/right trigger: forward and backward
   --Left stick L/R: rotate
@@ -143,7 +143,7 @@ local function update(ret)
 		if t-t_last_button>0.5 then
 			if ret.buttons[1]==1 then --START and STOP MAPPING
 				print("MAPPING START!!!!!!!!!")
-				os.execute("espeak 'mapping'")
+
 				rospub.mapcmd(1)
 				t_last_button=t
 			end
@@ -161,6 +161,11 @@ local function update(ret)
 			if ret.buttons[3]==1 then --REMOVE MARKER
 				os.execute("espeak 'remove'")
 				rospub.mapcmd(4)
+				t_last_button=t
+			end
+			if ret.buttons[2]==8 then --START and STOP MAPPING
+				os.execute("espeak 'reset'")
+				rospub.mapcmd(99)
 				t_last_button=t
 			end
 		end

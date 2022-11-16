@@ -106,6 +106,9 @@ local function check_map_command()
 		elseif bluetoothcmd=="dance4" then
 				body_ch:send'wait'
 				arm_ch:send'dance4'
+		else
+
+
 		end
 
 
@@ -116,10 +119,12 @@ local function check_map_command()
 		if mapcmd==1 then
 			if not is_mapping then
 				print"STARTING SLAM!!!!!"
+				os.execute("espeak 'slam'")
 				os.execute('rosnode kill /amcl')
 				os.execute('rosnode kill /map_server')
 				unix.usleep(1E6*1)
 				os.execute('roslaunch pnu_tb3_launch ssb_slam.launch &')
+				os.execute("espeak 'started'")
 				is_mapping=true
         marker_pose_list={{0,0,0}}
 			else
@@ -127,6 +132,7 @@ local function check_map_command()
 				if not robot_pose then print("No tf, returning")
         else
   				local pose={robot_pose[1],robot_pose[2],robot_pose[6]}
+					os.execute("espeak 'mapping complete'")
   				print"ENDING SLAM!!!"
   				os.execute('rosrun map_server map_saver -f ~/Desktop/SUSANGBOT/Data/map')
   				unix.usleep(1E6*1)
@@ -157,7 +163,7 @@ local function check_map_command()
 		elseif mapcmd==9 then
       print("MOVE START")
       wcm.set_task_index(1) --go from origin to pose #1
-			rospub.posereset({0,0,0})
+			-- rospub.posereset({0,0,0})
 		 	unix.usleep(1E6*1)
 		  body_ch:send'start'
 		end
