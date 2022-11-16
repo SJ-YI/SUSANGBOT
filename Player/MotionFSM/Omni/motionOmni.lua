@@ -11,7 +11,7 @@ local rossub = require'rossub'
 local rospub = require 'tb3_rospub'
 local sub_idx_cmdvel, sub_idx_laserscan
 local poseMoveStart
-
+local pfield=vector.ones(8)*100
 
 
 function state.entry()
@@ -48,8 +48,17 @@ end
 
 local function move_robot(vel)
 
+  local rfdist=pfield[4]
+  local fdist=pfield[5]
+  local lfdist=pfield[6]
 
-
+  local vel_mag0=math.sqrt(vel[1]*vel[1] + vel[2]*vel[2])
+  if fdist<pfield_hard_th then vel[1]=0
+  elseif fdist<pfield_soft_th and vel[1]>0 then
+    local max_allowed_velx = (fdist-pfield_hard_th)/(pfield_soft_th-pfield_hard_th)*Config.pathplan.max_vel_webots
+    vel[1]=math.min(vel[1],max_allowed_velx)
+  end
+  local vel_mag2=math.sqrt(vel[1]*vel[1] + vel[2]*vel[2])
 
   local xcomp,ycomp,acomp=Config.wheels.xcomp,Config.wheels.ycomp,Config.wheels.acomp
   local v1,v2,v3=0,0,0 --right back left
@@ -125,12 +134,6 @@ local function follow_path(t,dt)
 
     da,dx,dy=rotfactor*da2 + (1-rotfactor)*da1,relpose[1]/drelpose*max_vel_acclim,relpose[2]/drelpose*max_vel_acclim
 
-    -- if drelpose>Config.pathplan.omni_move_th then
-    --   if math.abs(da)>0.1 then dx,dy=0,0 end
-    -- end
-
-
-
 
 
   else --Not final waypoint
@@ -204,14 +207,6 @@ local function follow_path(t,dt)
   return true
 end
 
-
-
-
-
-
-
-
-
 function move_base(t,dt)
   local t_real=unix.time()
   local t_last=hcm.get_base_teleop_t()
@@ -269,9 +264,8 @@ function state.update()
   t_update = t
 
   local ret= rossub.checkLaserScanPField(sub_idx_laserscan, 8, {0.10,0,0})
-  if ret then
-    print("PFIELD:",unpack(ret))
-  end
+  if ret then pfield=ret end
+
   -- local ret = rossub.checkTwist(sub_idx_cmdvel)
   -- if ret and t-t_entry>1 then
   --   hcm.set_base_velocity({ret[1],ret[2],ret[6]})

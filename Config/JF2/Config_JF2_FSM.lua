@@ -65,8 +65,8 @@ Config.fsm = fsm
 
 
 Config.pathplan={
-  max_vel_webots=0.4,
-  max_vel=0.2,
+  max_vel_webots=0.3,
+  max_vel=0.3,
   max_avel=0.8,
   max_acceleration=0.8,
 
@@ -83,16 +83,15 @@ Config.pathplan={
   navigate_rfin = 0.15,
 
   --face the target at the final waypoint
-  -- rotate_th1=0.3,
-  -- rotate_th2=0.5,  --start at 0.3+0.5, and end at 0.5
-
   rotate_th1=0.2,
   rotate_th2=0.2,  --start at 0.2+0.2, and end at 0.2
 
---  direct_angle_th=1 --roatate to target angle if closer than this
   direct_angle_th=0.6, --roatate to target angle if closer than this
 
-  omni_move_th=0.4 --dont allow omni movement if the target is far than this
+  pfield_soft_th = 0.6,
+  pfield_hard_th = 0.3,
+
+
 }
 
 -- Add all FSM directories that are in Player
