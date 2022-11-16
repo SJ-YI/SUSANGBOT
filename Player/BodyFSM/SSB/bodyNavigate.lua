@@ -26,6 +26,8 @@ local function load_markers()
     lineno=lineno+1
   end
   fp:close()
+  marker_pose_list[#marker_pose_list+1]=util.shallow_copy(marker_pose_list[1]) --return to the origin
+
   for i=1,#marker_pose_list do
     local pose=marker_pose_list[i]
     print(string.format("%d: %.2f %.2f (%.1f)\n",i,pose[1],pose[2],pose[3]/DEG_TO_RAD))
