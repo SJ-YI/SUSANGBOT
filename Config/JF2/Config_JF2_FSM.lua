@@ -51,7 +51,12 @@ Config.dancemotion={
   45, -- pig market
   32 -- indian
 }
-
+Config.startframe={
+  100,
+  1,
+  1,
+  1,
+}
 
 Config.fsm = fsm
 
