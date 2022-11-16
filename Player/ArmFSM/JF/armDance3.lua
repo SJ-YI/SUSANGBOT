@@ -27,9 +27,11 @@ function state.update()
   local dt = t - t_update
   t_update = t
   if t>t_next_motion then
-    local dat=motiondata[motion_index]
-    local armc={dat[4],dat[5],dat[6],dat[7],   dat[8],dat[9],dat[10],dat[11]}
-    Body.set_arm_command_position(armc)
+    if motion_index>=1 then
+      local dat=motiondata[motion_index]
+      local armc={dat[4],dat[5],dat[6],dat[7],   dat[8],dat[9],dat[10],dat[11]}
+      Body.set_arm_command_position(armc)
+    end
     motion_index=motion_index+1
     t_next_motion=t_next_motion+0.01
   end

@@ -53,7 +53,7 @@ Config.dancemotion={
 }
 Config.startframe={
   100,
-  1,
+  -50,
   1,
   1,
 }
