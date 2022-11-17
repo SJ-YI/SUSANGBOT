@@ -92,7 +92,7 @@ local function check_map_command()
 	local bluetoothcmd=rossub.checkString(sub_idx_bluetoothmsg)
 	if bluetoothcmd and unix.time()>t_entry+1.0 then
 		print("Bluetooth command:",bluetoothcmd)
-		os.execute('espeak '..bluetoothcmd)
+
 
 		if bluetoothcmd=="dance1" then
 			body_ch:send'wait'
@@ -109,18 +109,20 @@ local function check_map_command()
     elseif bluetoothcmd=="left" then
 				body_ch:send'wait'
 				arm_ch:send'left'
-      elseif bluetoothcmd=="right" then
-  				body_ch:send'wait'
-  				arm_ch:send'right'
-        elseif bluetoothcmd=="greet" then
-            body_ch:send'wait'
-            arm_ch:send'greet'
+    elseif bluetoothcmd=="right" then
+			body_ch:send'wait'
+			arm_ch:send'right'
+    elseif bluetoothcmd=="greet" then
+        body_ch:send'wait'
+        arm_ch:send'greet'
 		elseif bluetoothcmd=="move" then
       body_ch:send'move'
       arm_ch:send'stop'
     elseif bluetoothcmd=="stop" then
       body_ch:send'wait'
       arm_ch:send'stop'
+		else
+			os.execute('espeak '..bluetoothcmd)	
 		end
 
 
