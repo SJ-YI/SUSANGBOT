@@ -15,6 +15,16 @@ fsm.Motion = {{'motionIdle', 'init', 'motionOmni'},}
 fsm.Arm = {
   {'armIdle', 'init', 'armInit'},
   {'armInit', 'done', 'armTeleop'},
+
+  {'armTeleop', 'greet', 'armGreet'},
+  {'armTeleop', 'left', 'armGreetLeft'},
+  {'armTeleop', 'right', 'armGreetRight'},
+
+
+  {'armGreet', 'stop', 'armIdle'},
+  {'armGreetLeft', 'stop', 'armIdle'},
+  {'armGreetRight', 'stop', 'armIdle'},
+
   {'armTeleop', 'dance1', 'armDance1'},
   {'armTeleop', 'dance2', 'armDance2'},
   {'armTeleop', 'dance3', 'armDance3'},
@@ -52,14 +62,23 @@ Config.dancemotion={
   36, -- spider
   26, -- little rabbit
   45, -- pig market
-  32 -- indian
+  32, -- indian
+
+
+  3, --greet
+  9, --right
+  10 --left
 }
 
 Config.startframe={
   100,  --good for dance 1
   60,  --60 and 98fps good for dance 2
   60,  --60 and 98fps good for dance 3
-  40   --40 and 98fps good for dance 4
+  40,   --40 and 98fps good for dance 4
+
+  1,
+  1,
+  1
 }
 Config.dance_fps=98
 
