@@ -245,8 +245,20 @@ function move_base(t,dt)
     else
       local path_execute=hcm.get_path_execute()
       if path_execute==0 then
-        mcm.set_walk_vel({0,0,0})
-        move_robot({0,0,0})
+
+        local cur_vel=mcm.get_walk_vel()
+        local vel_mag0=math.sqrt(cur_vel[1]*cur_vel[1] + cur_vel[2]*cur_vel[2])
+
+        vel_mag=math.max(0,vel_mag0 -dt*0.5)
+        if vel_mag<0.05 then
+          mcm.set_walk_vel({0,0,0})
+          move_robot({0,0,0})
+        else
+          local new_vel={cur_vel[1]/vel_mag0*vel_mag,cur_vel[2]/vel_mag0*vel_mag,0}
+          mcm.set_walk_vel(new_vel)
+          move_robot(new_vel)
+        end
+        
         poseMoveStart=wcm.get_robot_pose()
         return
       elseif path_execute==2 then
