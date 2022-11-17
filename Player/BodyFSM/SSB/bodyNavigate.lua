@@ -68,7 +68,8 @@ function state.update()
   end
 end
 
-function state.exit()  
+function state.exit()
+  hcm.set_path_execute(0)
   print(state._NAME..' Exit' )
 end
 
