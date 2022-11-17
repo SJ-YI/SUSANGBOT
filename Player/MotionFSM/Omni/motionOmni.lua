@@ -54,7 +54,7 @@ local function move_robot(vel)
 
   local pfield_hard_th=Config.pathplan.pfield_hard_th
   local pfield_soft_th=Config.pathplan.pfield_soft_th
-  local pfield_soft_th2 = 0.3
+  local pfield_soft_th2 = Config.pfield_soft_th2
 
   local vel_mag0=math.sqrt(vel[1]*vel[1] + vel[2]*vel[2])
   if fdist<pfield_hard_th then vel[1]=math.min(0,vel[1])
@@ -80,7 +80,7 @@ local function move_robot(vel)
 
   local vel_mag2=math.sqrt(vel[1]*vel[1] + vel[2]*vel[2])
 
-  
+
 
 
   local xcomp,ycomp,acomp=Config.wheels.xcomp,Config.wheels.ycomp,Config.wheels.acomp
