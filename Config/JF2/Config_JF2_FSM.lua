@@ -20,10 +20,17 @@ fsm.Arm = {
   {'armTeleop', 'left', 'armGreetLeft'},
   {'armTeleop', 'right', 'armGreetRight'},
 
-
   {'armGreet', 'stop', 'armIdle'},
+  {'armGreet', 'left', 'armIdle'},
+  {'armGreet', 'right', 'armIdle'},
+
   {'armGreetLeft', 'stop', 'armIdle'},
+  {'armGreetLeft', 'greet', 'armIdle'},
+  {'armGreetLeft', 'right', 'armIdle'},
+
   {'armGreetRight', 'stop', 'armIdle'},
+  {'armGreetRight', 'left', 'armIdle'},
+  {'armGreetRight', 'greet', 'armIdle'},
 
   {'armTeleop', 'dance1', 'armDance1'},
   {'armTeleop', 'dance2', 'armDance2'},
@@ -33,6 +40,11 @@ fsm.Arm = {
   {'armDance2', 'done', 'armIdle'},
   {'armDance3', 'done', 'armIdle'},
   {'armDance4', 'done', 'armIdle'},
+
+  {'armDance1', 'stop', 'armIdle'},
+  {'armDance2', 'stop', 'armIdle'},
+  {'armDance3', 'stop', 'armIdle'},
+  {'armDance4', 'stop', 'armIdle'},
 
   {'armDance1', 'stop', 'armIdle'},
   {'armDance2', 'stop', 'armIdle'},
