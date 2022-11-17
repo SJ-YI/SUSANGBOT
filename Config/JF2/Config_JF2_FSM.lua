@@ -121,7 +121,7 @@ Config.pathplan={
   pfield_soft_th = 0.55,
   pfield_hard_th = 0.35,
 
-  pfield_soft_th2 = 0.55, --for side obstacles
+  pfield_soft_th2 = 0.40, --for side obstacles
 }
 
 -- Add all FSM directories that are in Player
