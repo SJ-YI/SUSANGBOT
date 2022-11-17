@@ -63,52 +63,28 @@ fsm.Body = {
   {'bodyWait','move','bodyNavigate'},
 }
 
--- Config.dancemotion={
---   26, -- little rabbit
---   32, -- spider
---   36, -- indian
---   45 -- pig market
--- }
-
 Config.dancemotion={
   36, -- spider
   26, -- little rabbit
   45, -- pig market
   32, -- indian
-
-
   3, --greet
   9, --right
   10 --left
 }
 
--- Config.startframe={
---   100,  --good for dance 1
---   60,  --60 and 98fps good for dance 2
---   60,  --60 and 98fps good for dance 3
---   40,   --40 and 98fps good for dance 4
---
---   1,
---   1,
---   1
--- }
--- 0.5sec delay for susang tablet
 Config.startframe={
-  75,  
---  35,  --60 and 98fps good for dance 2
+  75,
   15,  --60 and 98fps good for dance 2
   35,  --60 and 98fps good for dance 3
   15,   --40 and 98fps good for dance 4
-
   1,
   1,
   1
 }
 Config.dance_fps=98
 
-
 Config.fsm = fsm
-
 
 Config.pathplan={
   max_vel_webots=0.3,
@@ -134,10 +110,11 @@ Config.pathplan={
 
   direct_angle_th=0.6, --roatate to target angle if closer than this
 
-  pfield_soft_th = 0.4,
-  pfield_hard_th = 0.2,
-
-
+  -- pfield_soft_th = 0.4,
+  -- pfield_hard_th = 0.2,
+  pfield_soft_th = 0.45,
+  pfield_hard_th = 0.25,
+  pfield_soft_th2 = 0.3, --for side obstacles
 }
 
 -- Add all FSM directories that are in Player

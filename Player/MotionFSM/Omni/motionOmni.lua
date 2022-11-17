@@ -66,7 +66,7 @@ local function move_robot(vel)
   if lfdist<pfield_soft_th2 and rfdist>pfield_soft_th2 then
     local repul_factor = (lfdist-pfield_hard_th)/(pfield_soft_th2-pfield_hard_th)
      local lf_approach_vel = (vel[1]+vel[2])/1.414 * repul_factor
-    if lf_approach_vel>0 then 
+    if lf_approach_vel>0 then
       vel[1],vel[2]=vel[1]-lf_approach_vel,vel[2]-lf_approach_vel
     end
   elseif rfdist<pfield_soft_th2 and lfdist>pfield_soft_th2 then
@@ -78,15 +78,10 @@ local function move_robot(vel)
     end
   end
 
-
-
-
-
-
-
-
-
   local vel_mag2=math.sqrt(vel[1]*vel[1] + vel[2]*vel[2])
+
+  
+
 
   local xcomp,ycomp,acomp=Config.wheels.xcomp,Config.wheels.ycomp,Config.wheels.acomp
   local v1,v2,v3=0,0,0 --right back left
