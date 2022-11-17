@@ -163,6 +163,11 @@ local function update(ret)
 				rospub.mapcmd(4)
 				t_last_button=t
 			end
+			if ret.buttons[7]==1 then --RESET POSITION
+				os.execute("espeak 'stop'")
+				rospub.mapcmd(98)
+				t_last_button=t
+			end
 			if ret.buttons[8]==1 then --RESET POSITION
 				os.execute("espeak 'reset'")
 				rospub.mapcmd(99)
