@@ -94,10 +94,11 @@ Config.dancemotion={
 -- }
 -- 0.5sec delay for susang tablet
 Config.startframe={
-  50,  --good for dance 1
-  10,  --60 and 98fps good for dance 2
-  10,  --60 and 98fps good for dance 3
-  -10,   --40 and 98fps good for dance 4
+  75,  
+--  35,  --60 and 98fps good for dance 2
+  15,  --60 and 98fps good for dance 2
+  35,  --60 and 98fps good for dance 3
+  15,   --40 and 98fps good for dance 4
 
   1,
   1,
