@@ -23,19 +23,21 @@ fsm.Arm = {
   {'armDance2', 'done', 'armIdle'},
   {'armDance3', 'done', 'armIdle'},
   {'armDance4', 'done', 'armIdle'},
+
+  {'armDance1', 'stop', 'armIdle'},
+  {'armDance2', 'stop', 'armIdle'},
+  {'armDance3', 'stop', 'armIdle'},
+  {'armDance4', 'stop', 'armIdle'},
 }
 fsm.Body = {
   {'bodyIdle', 'done', 'bodyIdle'},
-  {'bodyIdle', 'start', 'bodyNavigate'},
+  {'bodyIdle', 'move', 'bodyNavigate'},
+
   {'bodyNavigate', 'done', 'bodyIdle'},
   {'bodyNavigate', 'arrived', 'bodyWait'},
 
-  {'bodyIdle', 'interact', 'bodyInteract'},
-  {'bodyNavigate', 'interact', 'bodyInteract'},
-  {'bodyWait', 'interact', 'bodyInteract'},
-
-  {'bodyInteract','done','bodyNavigate'},
-  {'bodyWait','done','bodyNavigate'},
+  {'bodyNavigate', 'wait', 'bodyWait'},
+  {'bodyWait','move','bodyNavigate'},
 }
 
 -- Config.dancemotion={

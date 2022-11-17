@@ -41,7 +41,6 @@ function state.entry()
   t_update = t_entry
   load_markers()
   stage=0
-  wcm.set_task_index(wcm.get_task_index()+1)
 end
 
 function state.update()
@@ -63,12 +62,14 @@ function state.update()
     end
     if hcm.get_path_execute()==0 and stage==1 and t>t_move+t_wait then
       print("Navigation complete!!!")
+      wcm.set_task_index(wcm.get_task_index()+1)
       return "arrived"
     end
   end
 end
 
 function state.exit()
+  hcm.set_path_execute(0)
   print(state._NAME..' Exit' )
 end
 
