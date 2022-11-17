@@ -34,7 +34,8 @@ fsm.Body = {
   {'bodyIdle', 'move', 'bodyNavigate'},
 
   {'bodyNavigate', 'done', 'bodyIdle'},
-  {'bodyNavigate', 'arrived', 'bodyWait'},
+  {'bodyNavigate', 'arrived', 'bodyNavigateWait'},
+  {'bodyNavigateWait', 'done', 'bodyNavigate'},
 
   {'bodyNavigate', 'wait', 'bodyWait'},
   {'bodyWait','move','bodyNavigate'},

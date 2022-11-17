@@ -19,6 +19,7 @@ function state.update()
   local t = Body.get_time()
   local t_diff = t - t_update
   t_update = t
+  if t-t_entry>5.0 then return "done" end
 end
 
 function state.exit()
