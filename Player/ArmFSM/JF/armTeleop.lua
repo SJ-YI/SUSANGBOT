@@ -22,11 +22,6 @@ function state.update()
   local t  = Body.get_time()
   local dt = t - t_update
   t_update = t
-
-  local buttons=hcm.get_xb360_buttons()
-  if buttons[7]==1 then return "pickup" end
-  if buttons[8]==1 then return "release" end
-
 end
 
 function state.exit()
