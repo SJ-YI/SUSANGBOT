@@ -122,7 +122,7 @@ local function check_map_command()
       body_ch:send'wait'
       arm_ch:send'stop'
 		else
-			os.execute('espeak '..bluetoothcmd)	
+			os.execute('espeak '..bluetoothcmd)
 		end
 
 
@@ -174,12 +174,17 @@ local function check_map_command()
   		  marker_pose_list[#marker_pose_list]=nil
 			  save_markers()
 			end
+		elseif mapcmd==98 then
+      print("STOP")
+			body_ch:send'wait'
+      arm_ch:send'stop'
+		end
 		elseif mapcmd==9 then
       print("MOVE START")
       wcm.set_task_index(1) --go from origin to pose #1
 			-- rospub.posereset({0,0,0})
 		 	unix.usleep(1E6*1)
-		  body_ch:send'start'
+		  body_ch:send'move'
 		end
 	end
 end

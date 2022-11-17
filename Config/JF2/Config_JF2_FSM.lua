@@ -63,7 +63,7 @@ fsm.Body = {
   {'bodyWait','move','bodyNavigate'},
 }
 
-Config.pose_wait=5
+Config.pose_wait=3
 
 
 Config.dancemotion={
