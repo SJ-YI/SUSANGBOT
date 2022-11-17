@@ -178,7 +178,6 @@ local function check_map_command()
       print("STOP")
 			body_ch:send'wait'
       arm_ch:send'stop'
-		end
 		elseif mapcmd==9 then
       print("MOVE START")
       wcm.set_task_index(1) --go from origin to pose #1
