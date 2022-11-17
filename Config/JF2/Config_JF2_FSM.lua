@@ -59,7 +59,9 @@ fsm.Body = {
   {'bodyNavigate', 'arrived', 'bodyNavigateWait'},
   {'bodyNavigateWait', 'done', 'bodyNavigate'},
 
+  {'bodyNavigateWait', 'wait', 'bodyWait'},
   {'bodyNavigate', 'wait', 'bodyWait'},
+  
   {'bodyWait','move','bodyNavigate'},
 }
 
