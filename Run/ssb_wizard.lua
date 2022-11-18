@@ -121,6 +121,8 @@ local function check_map_command()
     elseif bluetoothcmd=="stop" then
       body_ch:send'wait'
       arm_ch:send'stop'
+		elseif bluetoothcmd=="guide" then
+			
 		else
 			os.execute('espeak '..bluetoothcmd)
 		end

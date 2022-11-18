@@ -61,7 +61,7 @@ fsm.Body = {
 
   {'bodyNavigateWait', 'wait', 'bodyWait'},
   {'bodyNavigate', 'wait', 'bodyWait'},
-  
+
   {'bodyWait','move','bodyNavigate'},
 }
 
@@ -87,6 +87,22 @@ Config.startframe={
   1,
   1
 }
+
+--delay the motion (video starting lag)
+Config.startframe={
+  75-50,
+  15-50,  --60 and 98fps good for dance 2
+  35-50,  --60 and 98fps good for dance 3
+  15-50,   --40 and 98fps good for dance 4
+  1,
+  1,
+  1
+}
+
+
+
+
+
 Config.dance_fps=98
 
 Config.fsm = fsm
