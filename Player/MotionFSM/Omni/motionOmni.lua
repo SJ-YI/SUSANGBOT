@@ -207,8 +207,9 @@ local function follow_path(t,dt)
     local vellimitEnd =math.min(1.0,math.max(Config.pathplan.navigate_minvf2,drelpose/Config.pathplan.navigate_r2 ))
     local max_vel_acclim=max_vel*math.min(vellimitStart, vellimitEnd)
     local dirangle = math.atan2(relpose[2],relpose[1])
---    local dontgobackfactor=math.min(1,  math.max(0.2,  2- math.abs(util.mod_angle(dirangle))/(60*DEG_TO_RAD) ) )
---    local mvel=max_vel_acclim * dontgobackfactor
+
+
+
     local mvel=max_vel_acclim
 
     if debug_print then
@@ -219,6 +220,15 @@ local function follow_path(t,dt)
 
 
     dx,dy=relpose[1]/drelpose*mvel,relpose[2]/drelpose*mvel
+
+    local dir_angle=math.abs(math.atan2(dy,dx))
+    if dir_angle>45*DEG_TO_RAD then
+      local vel_slow_factor=math.min(1,  (dir_angle-45*DEG_TO_RAD)/(90*DEG_TO_RAD-45*DEG_TO_RAD) ) --0 to 1
+      dx=dx*(1-vel_slow_factor)
+      dy=dy*(1-vel_slow_factor)      
+
+    end
+
     local old_vel=mcm.get_walk_vel()
     local ddx=util.procFunc(dx-old_vel[1], 0, dt*Config.pathplan.max_acceleration)
     local ddy=util.procFunc(dy-old_vel[2], 0, dt*Config.pathplan.max_acceleration)
