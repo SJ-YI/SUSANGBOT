@@ -90,10 +90,10 @@ Config.startframe={
 
 --delay the motion (video starting lag)
 Config.startframe={
-  75-50,
-  15-50,  --60 and 98fps good for dance 2
-  35-50,  --60 and 98fps good for dance 3
-  15-50,   --40 and 98fps good for dance 4
+  75-75,
+  15-100,  --60 and 98fps good for dance 2
+  35-100,  --60 and 98fps good for dance 3
+  15-100,   --40 and 98fps good for dance 4
   1,
   1,
   1
