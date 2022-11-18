@@ -116,13 +116,18 @@ local function check_map_command()
         body_ch:send'wait'
         arm_ch:send'greet'
 		elseif bluetoothcmd=="move" then
+			os.execute('mpg321 ../Media/movestart.mp3')
       body_ch:send'move'
       arm_ch:send'stop'
     elseif bluetoothcmd=="stop" then
+			os.execute('mpg321 ../Media/stop.mp3')
       body_ch:send'wait'
       arm_ch:send'stop'
-		elseif bluetoothcmd=="guide" then
-			
+		elseif bluetoothcmd=="Connected" then
+      os.execute('mpg321 ../Media/tablet.mp3')
+
+    elseif bluetoothcmd=="guide" then
+
 		else
 			os.execute('espeak '..bluetoothcmd)
 		end

@@ -40,10 +40,6 @@ function state.entry()
   t_entry = Body.get_time()
   t_update = t_entry
   load_markers()
-
-
-  
-
   hcm.set_path_execute(0)
 end
 
