@@ -64,13 +64,13 @@ local function move_robot(vel)
   end
 
   if lfdist<pfield_soft_th2 and rfdist>pfield_soft_th2 then
-    local repul_factor = (lfdist-pfield_hard_th)/(pfield_soft_th2-pfield_hard_th)
+    local repul_factor = (lfdist-pfield_hard_th2)/(pfield_soft_th2-pfield_hard_th2)
      local lf_approach_vel = (vel[1]+vel[2])/1.414 * repul_factor
     if lf_approach_vel>0 then
       vel[1],vel[2]=vel[1]-lf_approach_vel,vel[2]-lf_approach_vel
     end
   elseif rfdist<pfield_soft_th2 and lfdist>pfield_soft_th2 then
-    local repul_factor = (rfdist-pfield_hard_th)/(pfield_soft_th2-pfield_hard_th)
+    local repul_factor = (rfdist-pfield_hard_th2)/(pfield_soft_th2-pfield_hard_th2)
 
     local rf_approach_vel = (vel[1]-vel[2])/1.414*repul_factor
     if rf_approach_vel>0 then
@@ -225,7 +225,7 @@ local function follow_path(t,dt)
     if dir_angle>45*DEG_TO_RAD then
       local vel_slow_factor=math.min(1,  (dir_angle-45*DEG_TO_RAD)/(90*DEG_TO_RAD-45*DEG_TO_RAD) ) --0 to 1
       dx=dx*(1-vel_slow_factor)
-      dy=dy*(1-vel_slow_factor)      
+      dy=dy*(1-vel_slow_factor)
 
     end
 

@@ -131,15 +131,14 @@ Config.pathplan={
 
   direct_angle_th=0.6, --roatate to target angle if closer than this
 
-  -- pfield_soft_th = 0.4,
-  -- pfield_hard_th = 0.2,
-  -- pfield_soft_th = 0.45,
-  -- pfield_hard_th = 0.25,
-  -- pfield_soft_th2 = 0.3, --for side obstacles
-  pfield_soft_th = 0.55,
-  pfield_hard_th = 0.35,
+  -- pfield_soft_th = 0.55,
+  -- pfield_hard_th = 0.35,
+
+  pfield_soft_th = 0.65,
+  pfield_hard_th = 0.50,
 
   pfield_soft_th2 = 0.40, --for side obstacles
+  pfield_hard_th2 = 0.35, --for side obstacles
 }
 
 -- Add all FSM directories that are in Player
