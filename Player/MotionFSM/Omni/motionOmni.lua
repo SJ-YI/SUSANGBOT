@@ -55,6 +55,7 @@ local function move_robot(vel)
   local pfield_hard_th=Config.pathplan.pfield_hard_th
   local pfield_soft_th=Config.pathplan.pfield_soft_th
   local pfield_soft_th2 = Config.pathplan.pfield_soft_th2
+  local pfield_hard_th2 = Config.pathplan.pfield_hard_th2
 
   local vel_mag0=math.sqrt(vel[1]*vel[1] + vel[2]*vel[2])
   if fdist<pfield_hard_th then vel[1]=math.min(0,vel[1])

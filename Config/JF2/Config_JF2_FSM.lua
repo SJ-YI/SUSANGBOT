@@ -134,8 +134,8 @@ Config.pathplan={
   -- pfield_soft_th = 0.55,
   -- pfield_hard_th = 0.35,
 
-  pfield_soft_th = 0.65,
-  pfield_hard_th = 0.50,
+  pfield_soft_th = 0.60,
+  pfield_hard_th = 0.45,
 
   pfield_soft_th2 = 0.40, --for side obstacles
   pfield_hard_th2 = 0.35, --for side obstacles
