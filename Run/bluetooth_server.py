@@ -31,11 +31,15 @@ def runServer():
     pub_bluetoothmsg.publish("Connected")
 
     while(1):
-      data=inputSocket.recv(1024)
-      print "received [%s] \n " % data
-      pub_bluetoothmsg.publish(data)
+      try:
+        data=inputSocket.recv(1024)
+        print "received [%s] \n " % data
+        pub_bluetoothmsg.publish(data)
+      except bluetooth.btcommon.BluetoothError:
+        print "BLUETOOTH ERROR!"
+        inputSocket.close()
+        serverSocket.close()
+        return
 
-    inputSocket.close()
-    serverSocket.close()
-
-runServer()
+while(1):
+  runServer()
